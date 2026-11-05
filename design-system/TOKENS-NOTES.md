@@ -40,8 +40,26 @@
 **Cặp trượt (chưa tự sửa, chờ người phụ trách quyết):**
 - Viền ô nhập ở theme sáng: `--field-border` `#a1a1aa` chỉ đạt 2.6:1. Đề xuất đổi sang `#71717a` → 4.8:1.
 
+### Màn thử trên iPhone ảo (SwiftUI) · 05/11/2026
+- Code: repo `../app`, project `NhoThuoc.xcodeproj`. Màn `TokenLab/TokenLabView.swift`. Token: `DesignSystem/Tokens.swift`.
+- **Đã kiểm trên iPhone 17 Pro ảo (iOS 26.5)**, cả sáng và tối:
+  - Tích / bỏ tích thuốc chạy được, nút đổi thành "Đã uống (còn 1 thuốc chưa uống)".
+  - Nút "Tuỳ chỉnh" mở bảng chọn. Đổi màu, cỡ chữ, kiểu chữ thấy ngay trên màn phía sau.
+  - Bảng tương phản trong app tự tính lại theo lựa chọn.
+- Ảnh: `token-review/ios-17pro-light-1-nhac.png`, `token-review/ios-17pro-dark-1-nhac.png`.
+- **Hai chỗ lệch so với HeroUI gốc**, vì người lớn tuổi phải đọc được (M14):
+  - Nút xám (secondary) dùng chữ màu chính thay vì chữ màu chủ đạo. Lý do: chữ ngọc lam trên nền xám chỉ đạt 4.3:1.
+  - Viền nút chọn (outline) dùng màu viền ô nhập thay vì `--border`. Lý do: `--border` chỉ đạt 1.4:1 trên nền trắng.
+- **Phát hiện mới:** chip "Sắp tới" kiểu nền nhạt (soft) ở chế độ sáng, màu ngọc lam, đạt **4.4:1, trượt AA một chút**. Ở chế độ tối đạt 6.7.
+  - Với màu lam đạt 5.3, hồng đất 4.8, cam đất 4.1.
+  - Chưa tự sửa. Hướng sửa nếu giữ ngọc lam: dùng chữ ngọc lam đậm hơn cho chip này.
+- Tương phản của 3 màu thay thế (sáng · tối):
+  - Nút chính: lam 6.7 · 5.8, cam đất 5.2 · 6.9, hồng đất 6.3 · 5.8.
+  - **Lam là màu duy nhất đạt AA ở mọi cặp.**
+  - Lưu ý: cam đất dễ lẫn với trạng thái "Còn thiếu" (cam), hồng đất dễ lẫn với "Chưa đánh dấu" (đỏ).
+
 ### Câu hỏi khi duyệt
 1. Màu chủ đạo ngọc lam có hợp ý không? Phương án khác: lam `#1d4ed8`, cam đất `#c2410c`, hồng đất `#be123c`.
 2. Cỡ chữ gốc 19px có đủ to không? Phương án: 21px.
 3. Chữ thường hay chữ bo tròn (SF Pro Rounded)?
-4. Đổi viền ô nhập sang `#71717a`?
+4. Đổi viền ô nhập sang `#71717a`? Từ bản iPhone, lựa chọn này áp cho cả viền ô tích và viền nút chọn.

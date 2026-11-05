@@ -7,7 +7,7 @@ Tên tạm của sản phẩm: **Nhớ Thuốc** (*giả định*, xem Q20 trong
 | Repo | Đường dẫn | Nhánh chính | Ai push |
 |---|---|---|---|
 | Spec | `<thư mục dự án>/docs` | main | người phụ trách sản phẩm + agent của họ, push thẳng |
-| Code | `<thư mục dự án>/app` (*chưa tạo*) | main | chỉ qua nhánh feature; người phụ trách sản phẩm duyệt merge |
+| Code | `<thư mục dự án>/app` (tạo 05/11/2026, `NhoThuoc.xcodeproj`, bundle id *giả định* `vn.nhothuoc.app`) | main | chỉ qua nhánh feature; người phụ trách sản phẩm duyệt merge |
 
 Tài liệu và code tách riêng tuyệt đối: repo code chặn `docs/`, `research/`, `HANDOFF*.md` trong `.gitignore`.
 
@@ -17,7 +17,8 @@ Tài liệu và code tách riêng tuyệt đối: repo code chặn `docs/`, `res
 - Nhắc: `UserNotifications` (local notification, time-sensitive, có nút thao tác). Tuỳ chọn nhắc kiểu báo thức: AlarmKit (iOS 26+).
 - Đọc đơn: Vision (nhận dạng chữ, chạy trên máy). Tách thuốc từ chữ: luật phân tích + tuỳ chọn Apple Foundation Models (trên máy) nếu thiết bị hỗ trợ.
 - Test: Swift Testing (logic) + XCUITest (luồng chính).
-- Máy làm: macOS, Xcode, iOS Simulator.
+- Máy làm: macOS, Xcode 26.6, iOS Simulator 26.5 (máy ảo chính: iPhone 17 Pro).
+- Rủi ro: Xcode 26.6 có thể chưa cài được app lên máy thật chạy iOS 27. Kiểm ở ML-00, có thể phải cập nhật Xcode.
 
 ## Design system
 - Nền: **phong cách HeroUI v3** (người phụ trách chốt 05/11/2026). App vẫn viết bằng SwiftUI: component SwiftUI được dựng lại theo token và kiểu dáng của HeroUI, theo Apple HIG về điều hướng và cử chỉ.
