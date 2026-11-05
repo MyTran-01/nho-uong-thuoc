@@ -12,9 +12,11 @@ struct HButtonStyle: ButtonStyle {
     var variant: HButtonVariant = .primary
     var fullWidth = false
     var minHeight: CGFloat? = nil
+    /// Tighter side padding for option chips.
+    var compact = false
 
     func makeBody(configuration: Configuration) -> some View {
-        HButtonBody(configuration: configuration, variant: variant, fullWidth: fullWidth, minHeight: minHeight)
+        HButtonBody(configuration: configuration, variant: variant, fullWidth: fullWidth, minHeight: minHeight, compact: compact)
     }
 }
 
@@ -23,6 +25,7 @@ private struct HButtonBody: View {
     let variant: HButtonVariant
     let fullWidth: Bool
     let minHeight: CGFloat?
+    let compact: Bool
     @Environment(\.theme) private var theme
     @Environment(\.isEnabled) private var isEnabled
 
@@ -31,7 +34,7 @@ private struct HButtonBody: View {
             .appFont(.button)
             .multilineTextAlignment(.center)
             .foregroundStyle(foreground)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, compact ? 14 : 20)
             .padding(.vertical, 10)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: minHeight ?? theme.touchMin)
             .background(Capsule().fill(background))
@@ -110,7 +113,7 @@ struct HChip: View {
 
     private var colors: (bg: Tok, fg: Tok) {
         switch (color, variant) {
-        case (.accent, .soft): (theme.accentSoft, theme.accent)
+        case (.accent, .soft): (theme.accentSoft, theme.accentSoftForeground)
         case (.accent, .solid): (theme.accent, theme.accentForeground)
         case (.success, _): (theme.success, theme.successForeground)
         case (.warning, _): (theme.warning, theme.warningForeground)
@@ -191,7 +194,7 @@ struct HOptionGroup<Value: Hashable>: View {
         FlowLayout(spacing: 8, lineSpacing: 8) {
             ForEach(options, id: \.value) { option in
                 Button(option.label) { selection = option.value }
-                    .buttonStyle(HButtonStyle(variant: option.value == selection ? .primary : .outline))
+                    .buttonStyle(HButtonStyle(variant: option.value == selection ? .primary : .outline, compact: true))
                     .accessibilityAddTraits(option.value == selection ? .isSelected : [])
             }
         }

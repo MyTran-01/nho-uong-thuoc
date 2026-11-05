@@ -80,10 +80,11 @@ nonisolated enum AccentOption: String, CaseIterable, Identifiable, Sendable {
 
 /// Resolved theme: colours, shape and type settings.
 nonisolated struct Theme: Equatable, Sendable {
+    // Locked for the MVP (token review 05/11/2026, recommended set).
     var accentOption: AccentOption = .teal
     var baseSize: CGFloat = 19
     var rounded = false
-    var strongFieldBorder = false
+    var strongFieldBorder = true
 
     // Surfaces and text
     let background = Tok(0xf2f2f7, 0x000000)
@@ -98,6 +99,8 @@ nonisolated struct Theme: Equatable, Sendable {
     var accent: Tok { accentOption.accent }
     var accentForeground: Tok { accentOption.accentForeground }
     var accentSoft: Tok { accent.blended(alpha: 0.15, over: surface) }
+    /// Text on accentSoft. Darker than accent so it reaches AA (teal on soft teal was 4.4:1).
+    let accentSoftForeground = Tok(0x115e59, 0x5eead4)
 
     // Status
     let success = Tok(0x15803d, 0x4ade80)
@@ -126,42 +129,6 @@ nonisolated struct Theme: Equatable, Sendable {
 
 extension EnvironmentValues {
     @Entry var theme = Theme()
-}
-
-enum AppearanceOption: String, CaseIterable, Identifiable {
-    case system, light, dark
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .system: "Theo máy"
-        case .light: "Sáng"
-        case .dark: "Tối"
-        }
-    }
-
-    var scheme: ColorScheme? {
-        switch self {
-        case .system: nil
-        case .light: .light
-        case .dark: .dark
-        }
-    }
-}
-
-/// Live, editable theme settings for the token lab.
-@Observable
-final class ThemeSettings {
-    var accent: AccentOption = .teal
-    var baseSize: CGFloat = 19
-    var rounded = false
-    var strongFieldBorder = false
-    var appearance: AppearanceOption = .system
-
-    var theme: Theme {
-        Theme(accentOption: accent, baseSize: baseSize, rounded: rounded, strongFieldBorder: strongFieldBorder)
-    }
 }
 
 /// WCAG 2.x contrast helpers.
