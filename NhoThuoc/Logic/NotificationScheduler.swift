@@ -42,24 +42,37 @@ enum NotificationScheduler {
         return c
     }
 
+    nonisolated struct Planned: Equatable, Sendable {
+        let id: String
+        let fire: Date
+        let slot: Slot
+    }
+
+    /// Pure planning step: which reminders to schedule, earliest first, capped at 64.
+    /// The first reminder of a dose time fires at its time, then every 10 minutes, 3 more times.
+    nonisolated static func plan(slots: [Slot], isMarked: (String) -> Bool, now: Date,
+                                 repeats: Int = 3, interval: TimeInterval = 600, limit: Int = 64) -> [Planned] {
+        var out: [Planned] = []
+        for slot in slots where !isMarked(slot.key) {
+            for n in 0...repeats {
+                let fire = slot.date.addingTimeInterval(Double(n) * interval)
+                if fire > now { out.append(Planned(id: "\(slot.key)#\(n)", fire: fire, slot: slot)) }
+            }
+        }
+        return Array(out.sorted { $0.fire < $1.fire }.prefix(limit))
+    }
+
     /// Rebuilds every pending reminder from current data.
     static func reschedule(now: Date = .now, in context: ModelContext = AppStore.context) {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
         let slots = AppStore.slots(around: now, extraDays: 2, in: context)
-        var requests: [(Date, UNNotificationRequest)] = []
-        for slot in slots where AppStore.log(forKey: slot.key, in: context) == nil {
-            let c = content(for: slot)
-            for n in 0...repeats {
-                let fire = slot.date.addingTimeInterval(Double(n) * repeatInterval)
-                guard fire > now else { continue }
-                let comps = SlotEngine.calendar.dateComponents([.year, .month, .day, .hour, .minute], from: fire)
-                let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
-                requests.append((fire, UNNotificationRequest(identifier: "\(slot.key)#\(n)", content: c, trigger: trigger)))
-            }
-        }
-        for (_, r) in requests.sorted(by: { $0.0 < $1.0 }).prefix(maxPending) {
-            center.add(r)
+        let marked = Set(((try? context.fetch(FetchDescriptor<DoseLog>())) ?? []).map(\.slotKey))
+        for p in plan(slots: slots, isMarked: { marked.contains($0) }, now: now,
+                      repeats: repeats, interval: repeatInterval, limit: maxPending) {
+            let comps = SlotEngine.calendar.dateComponents([.year, .month, .day, .hour, .minute], from: p.fire)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+            center.add(UNNotificationRequest(identifier: p.id, content: content(for: p.slot), trigger: trigger))
         }
     }
 
