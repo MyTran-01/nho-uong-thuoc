@@ -4,6 +4,7 @@ Mỗi lần sửa tài liệu thêm 1 dòng vào "Chưa release". Dòng mới nh
 
 ## Chưa release
 
+- 05/11/2026: Design system — chốt nền giao diện theo phong cách HeroUI (app vẫn là SwiftUI). Dựng Token Playground bằng HeroUI thật, token v0.1 chờ duyệt (G0).
 - 05/11/2026: Nhắc uống thuốc v1 — **PRD 1.0 được duyệt**, các câu hỏi còn mở dùng mặc định. Thêm yêu cầu: lời văn tự nhiên, chữ to, nút lớn cho người lớn tuổi (M14, mục 13).
 - 05/11/2026: Nhắc uống thuốc v1 — PRD 0.3 theo góp ý vòng 2:
   - Bỏ việc app tự hỏi "đã hết thuốc chưa".

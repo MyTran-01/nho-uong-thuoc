@@ -20,7 +20,8 @@ Tài liệu và code tách riêng tuyệt đối: repo code chặn `docs/`, `res
 - Máy làm: macOS, Xcode, iOS Simulator.
 
 ## Design system
-- Nền: **component hệ thống của iOS (SwiftUI) theo Apple HIG.**
+- Nền: **phong cách HeroUI v3** (người phụ trách chốt 05/11/2026). App vẫn viết bằng SwiftUI: component SwiftUI được dựng lại theo token và kiểu dáng của HeroUI, theo Apple HIG về điều hướng và cử chỉ.
+- Token Playground (G0): `design-system/heroui-lab/`, component HeroUI thật. Token nguồn: `design-system/heroui-lab/src/tokens.css`. Ghi chú: `design-system/TOKENS-NOTES.md`.
   Ngoại lệ so với luật Danh Method "chỉ shadcn/ui hoặc HeroUI": hai thư viện đó dành cho web, không dùng được cho app SwiftUI native. Preview HTML (G1) sẽ mô phỏng component iOS.
 - Token: màu thương hiệu, cỡ chữ theo Dynamic Type, bo góc, khoảng cách. Chốt ở bước `design-tokens` (G0). File: `design-system/tokens.html` (chưa có).
 - ui-ux-pro-max: chưa cài, hỏi ở bước token.

@@ -1,0 +1,824 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "id": "nhothuoc-heroui-lab@0.0.1",
+    "hashes": {
+      "node_modules/@heroui/styles/dist/themes/default/variables.css": "80efc8752b6e15c2acf285756bfeb26290749005335092fee643ed9ba9084f4c",
+      "src/tokens.css": "e56c063fba45108a000cec6c68b0b80b2e1853e934fdb69a2941623e1553bd01"
+    }
+  },
+  "tokens": {
+    "light": {
+      "--white": "oklch(100% 0 0)",
+      "--black": "oklch(0% 0 0)",
+      "--snow": "oklch(0.9911 0 0)",
+      "--eclipse": "oklch(0.2103 0.0059 285.89)",
+      "--spacing": "0.25rem",
+      "--border-width": "1px",
+      "--field-border-width": "0px",
+      "--disabled-opacity": "0.5",
+      "--ring-offset-width": "2px",
+      "--cursor-interactive": "pointer",
+      "--cursor-disabled": "not-allowed",
+      "--radius": "0.75rem",
+      "--field-radius": "calc(var(--radius) * 1.25)",
+      "--accent": "#0f766e",
+      "--accent-foreground": "#ffffff",
+      "--success": "#15803d",
+      "--success-foreground": "#ffffff",
+      "--field-border": "#a1a1aa",
+      "--skeleton-animation": "shimmer",
+      "--tooltip-delay": "1500ms",
+      "--tooltip-close-delay": "500ms",
+      "--background": "#f2f2f7",
+      "--foreground": "#111114",
+      "--surface": "#ffffff",
+      "--surface-foreground": "#111114",
+      "--surface-secondary": "oklch(0.9524 0.0013 286.37)",
+      "--surface-secondary-foreground": "var(--foreground)",
+      "--surface-tertiary": "oklch(0.9373 0.0013 286.37)",
+      "--surface-tertiary-foreground": "var(--foreground)",
+      "--overlay": "#ffffff",
+      "--overlay-foreground": "#111114",
+      "--muted": "#52525b",
+      "--scrollbar": "var(--scrollbar-thumb)",
+      "--scrollbar-thumb": "color-mix(in oklch, var(--foreground) 15%, transparent)",
+      "--scrollbar-track": "transparent",
+      "--scrollbar-gutter": "auto",
+      "--scrollbar-width": "thin",
+      "--scrollbar-color": "var(--scrollbar-thumb) var(--scrollbar-track)",
+      "--default": "#e4e4e7",
+      "--default-foreground": "#111114",
+      "--field-background": "#ffffff",
+      "--field-foreground": "#111114",
+      "--field-placeholder": "var(--muted)",
+      "--warning": "#b45309",
+      "--warning-foreground": "#ffffff",
+      "--danger": "#b91c1c",
+      "--danger-foreground": "#ffffff",
+      "--segment": "var(--white)",
+      "--segment-foreground": "var(--eclipse)",
+      "--border": "#d4d4d8",
+      "--separator": "#e4e4e7",
+      "--focus": "#0f766e",
+      "--link": "#0f766e",
+      "--backdrop": "rgba(0, 0, 0, 0.5)",
+      "--surface-hover": "color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%)",
+      "--background-secondary": "color-mix(in oklab, var(--background) 96%, var(--foreground) 4%)",
+      "--background-tertiary": "color-mix(in oklab, var(--background) 92%, var(--foreground) 8%)",
+      "--background-inverse": "var(--foreground)",
+      "--default-hover": "color-mix(in oklab, var(--default) 96%, var(--default-foreground) 4%)",
+      "--accent-hover": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+      "--success-hover": "color-mix(in oklab, var(--success) 90%, var(--success-foreground) 10%)",
+      "--warning-hover": "color-mix(in oklab, var(--warning) 90%, var(--warning-foreground) 10%)",
+      "--danger-hover": "color-mix(in oklab, var(--danger) 90%, var(--danger-foreground) 10%)",
+      "--field-hover": "color-mix( in oklab, var(--field-background, var(--default)) 90%, var(--field-foreground, var(--foreground)) 2% )",
+      "--field-focus": "var(--field-background, var(--default))",
+      "--field-border-hover": "color-mix( in oklab, var(--field-border, var(--border)) 88%, var(--field-foreground, var(--foreground)) 10% )",
+      "--field-border-focus": "color-mix( in oklab, var(--field-border, var(--border)) 74%, var(--field-foreground, var(--foreground)) 22% )",
+      "--default-soft": "color-mix(in oklab, var(--default) 50%, transparent)",
+      "--default-soft-foreground": "var(--default-foreground)",
+      "--default-soft-hover": "color-mix(in oklab, var(--default) 60%, transparent)",
+      "--accent-soft": "color-mix(in oklab, var(--accent) 15%, transparent)",
+      "--accent-soft-foreground": "color-mix(in oklab, var(--accent) 70%, var(--foreground) 30%)",
+      "--accent-soft-hover": "color-mix(in oklab, var(--accent) 20%, transparent)",
+      "--danger-soft": "color-mix(in oklab, var(--danger) 15%, transparent)",
+      "--danger-soft-foreground": "color-mix(in oklab, var(--danger) 70%, var(--foreground) 40%)",
+      "--danger-soft-hover": "color-mix(in oklab, var(--danger) 20%, transparent)",
+      "--warning-soft": "color-mix(in oklab, var(--warning) 15%, transparent)",
+      "--warning-soft-foreground": "color-mix(in oklab, var(--warning) 80%, var(--foreground) 70%)",
+      "--warning-soft-hover": "color-mix(in oklab, var(--warning) 20%, transparent)",
+      "--success-soft": "color-mix(in oklab, var(--success) 15%, transparent)",
+      "--success-soft-foreground": "color-mix(in oklab, var(--success) 80%, var(--foreground) 60%)",
+      "--success-soft-hover": "color-mix(in oklab, var(--success) 20%, transparent)",
+      "--separator-secondary": "color-mix(in oklab, var(--surface) 85%, var(--surface-foreground) 15%)",
+      "--separator-tertiary": "color-mix(in oklab, var(--surface) 81%, var(--surface-foreground) 19%)",
+      "--border-secondary": "color-mix(in oklab, var(--surface) 78%, var(--surface-foreground) 22%)",
+      "--border-tertiary": "color-mix(in oklab, var(--surface) 66%, var(--surface-foreground) 34%)",
+      "--surface-shadow": "0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 0 1px 0 rgba(0, 0, 0, 0.06)",
+      "--overlay-shadow": "0 2px 8px 0 rgba(0, 0, 0, 0.06), 0 -6px 12px 0 rgba(0, 0, 0, 0.03), 0 14px 28px 0 rgba(0, 0, 0, 0.08)",
+      "--field-shadow": "0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 0 1px 0 rgba(0, 0, 0, 0.06)",
+      "--font-sans": "-apple-system, \"SF Pro Text\", system-ui, \"Segoe UI\", Roboto, sans-serif",
+      "--font-rounded": "ui-rounded, \"SF Pro Rounded\", -apple-system, system-ui, sans-serif",
+      "--font-size-base": "19px",
+      "--touch-min": "48px",
+      "--button-height": "56px"
+    },
+    "dark": {
+      "--white": "oklch(100% 0 0)",
+      "--black": "oklch(0% 0 0)",
+      "--snow": "oklch(0.9911 0 0)",
+      "--eclipse": "oklch(0.2103 0.0059 285.89)",
+      "--spacing": "0.25rem",
+      "--border-width": "1px",
+      "--field-border-width": "0px",
+      "--disabled-opacity": "0.5",
+      "--ring-offset-width": "2px",
+      "--cursor-interactive": "pointer",
+      "--cursor-disabled": "not-allowed",
+      "--radius": "0.75rem",
+      "--field-radius": "calc(var(--radius) * 1.25)",
+      "--accent": "#2dd4bf",
+      "--accent-foreground": "#042f2e",
+      "--success": "#4ade80",
+      "--success-foreground": "#052e16",
+      "--field-border": "#71717a",
+      "--skeleton-animation": "shimmer",
+      "--tooltip-delay": "1500ms",
+      "--tooltip-close-delay": "500ms",
+      "--background": "#000000",
+      "--foreground": "#f4f4f5",
+      "--surface": "#1c1c1e",
+      "--surface-foreground": "#f4f4f5",
+      "--surface-secondary": "oklch(0.257 0.0037 286.14)",
+      "--surface-secondary-foreground": "var(--foreground)",
+      "--surface-tertiary": "oklch(0.2721 0.0024 247.91)",
+      "--surface-tertiary-foreground": "var(--foreground)",
+      "--overlay": "#2c2c2e",
+      "--overlay-foreground": "#f4f4f5",
+      "--muted": "#d4d4d8",
+      "--scrollbar": "var(--scrollbar-thumb)",
+      "--scrollbar-thumb": "color-mix(in oklch, var(--foreground) 15%, transparent)",
+      "--scrollbar-track": "transparent",
+      "--scrollbar-gutter": "auto",
+      "--scrollbar-width": "thin",
+      "--scrollbar-color": "var(--scrollbar-thumb) var(--scrollbar-track)",
+      "--default": "#3a3a3c",
+      "--default-foreground": "#f4f4f5",
+      "--field-background": "#1c1c1e",
+      "--field-foreground": "#f4f4f5",
+      "--field-placeholder": "var(--muted)",
+      "--warning": "#fbbf24",
+      "--warning-foreground": "#451a03",
+      "--danger": "#f87171",
+      "--danger-foreground": "#450a0a",
+      "--segment": "oklch(0.3964 0.01 285.93)",
+      "--segment-foreground": "var(--foreground)",
+      "--border": "#3f3f46",
+      "--separator": "#27272a",
+      "--focus": "#2dd4bf",
+      "--link": "#2dd4bf",
+      "--backdrop": "rgba(0, 0, 0, 0.6)",
+      "--surface-hover": "color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%)",
+      "--background-secondary": "color-mix(in oklab, var(--background) 96%, var(--foreground) 4%)",
+      "--background-tertiary": "color-mix(in oklab, var(--background) 92%, var(--foreground) 8%)",
+      "--background-inverse": "var(--foreground)",
+      "--default-hover": "color-mix(in oklab, var(--default) 96%, var(--default-foreground) 4%)",
+      "--accent-hover": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+      "--success-hover": "color-mix(in oklab, var(--success) 90%, var(--success-foreground) 10%)",
+      "--warning-hover": "color-mix(in oklab, var(--warning) 90%, var(--warning-foreground) 10%)",
+      "--danger-hover": "color-mix(in oklab, var(--danger) 90%, var(--danger-foreground) 10%)",
+      "--field-hover": "color-mix( in oklab, var(--field-background, var(--default)) 90%, var(--field-foreground, var(--foreground)) 2% )",
+      "--field-focus": "var(--field-background, var(--default))",
+      "--field-border-hover": "color-mix( in oklab, var(--field-border, var(--border)) 88%, var(--field-foreground, var(--foreground)) 10% )",
+      "--field-border-focus": "color-mix( in oklab, var(--field-border, var(--border)) 74%, var(--field-foreground, var(--foreground)) 22% )",
+      "--default-soft": "color-mix(in oklab, var(--default) 50%, transparent)",
+      "--default-soft-foreground": "var(--default-foreground)",
+      "--default-soft-hover": "color-mix(in oklab, var(--default) 60%, transparent)",
+      "--accent-soft": "color-mix(in oklab, var(--accent) 12%, transparent)",
+      "--accent-soft-foreground": "color-mix(in oklab, var(--accent) 92%, var(--foreground) 8%)",
+      "--accent-soft-hover": "color-mix(in oklab, var(--accent) 16%, transparent)",
+      "--danger-soft": "color-mix(in oklab, var(--danger) 15%, transparent)",
+      "--danger-soft-foreground": "color-mix(in oklab, var(--danger) 92%, var(--foreground) 8%)",
+      "--danger-soft-hover": "color-mix(in oklab, var(--danger) 20%, transparent)",
+      "--warning-soft": "color-mix(in oklab, var(--warning) 12%, transparent)",
+      "--warning-soft-foreground": "color-mix(in oklab, var(--warning) 92%, var(--foreground) 8%)",
+      "--warning-soft-hover": "color-mix(in oklab, var(--warning) 16%, transparent)",
+      "--success-soft": "color-mix(in oklab, var(--success) 12%, transparent)",
+      "--success-soft-foreground": "color-mix(in oklab, var(--success) 92%, var(--foreground) 8%)",
+      "--success-soft-hover": "color-mix(in oklab, var(--success) 16%, transparent)",
+      "--separator-secondary": "color-mix(in oklab, var(--surface) 85%, var(--surface-foreground) 15%)",
+      "--separator-tertiary": "color-mix(in oklab, var(--surface) 81%, var(--surface-foreground) 19%)",
+      "--border-secondary": "color-mix(in oklab, var(--surface) 78%, var(--surface-foreground) 22%)",
+      "--border-tertiary": "color-mix(in oklab, var(--surface) 66%, var(--surface-foreground) 34%)",
+      "--surface-shadow": "0 0 0 0 transparent inset",
+      "--overlay-shadow": "0 0 1px 0 rgba(255, 255, 255, 0.3) inset",
+      "--field-shadow": "0 0 0 0 transparent inset",
+      "--font-sans": "-apple-system, \"SF Pro Text\", system-ui, \"Segoe UI\", Roboto, sans-serif",
+      "--font-rounded": "ui-rounded, \"SF Pro Rounded\", -apple-system, system-ui, sans-serif",
+      "--font-size-base": "19px",
+      "--touch-min": "48px",
+      "--button-height": "56px"
+    }
+  },
+  "ui": {
+    "target": "heroui",
+    "shadcn": {
+      "installed": false,
+      "components": []
+    },
+    "heroui": {
+      "installed": true,
+      "version": "3.2.7",
+      "majorVersion": 3,
+      "mode": "monolithic",
+      "components": [
+        "accordion",
+        "alert",
+        "alert-dialog",
+        "autocomplete",
+        "avatar",
+        "avatar-group",
+        "badge",
+        "breadcrumbs",
+        "button",
+        "button-group",
+        "calendar",
+        "calendar-year-picker",
+        "card",
+        "checkbox",
+        "checkbox-group",
+        "chip",
+        "close-button",
+        "color-area",
+        "color-field",
+        "color-input-group",
+        "color-picker",
+        "color-slider",
+        "color-swatch",
+        "color-swatch-picker",
+        "combo-box",
+        "date-field",
+        "date-input-group",
+        "date-picker",
+        "date-range-picker",
+        "description",
+        "disclosure",
+        "disclosure-group",
+        "drawer",
+        "dropdown",
+        "empty-state",
+        "error-message",
+        "field-error",
+        "fieldset",
+        "form",
+        "header",
+        "input",
+        "input-group",
+        "input-otp",
+        "kbd",
+        "label",
+        "link",
+        "list-box",
+        "list-box-item",
+        "list-box-section",
+        "menu",
+        "menu-item",
+        "menu-section",
+        "meter",
+        "modal",
+        "number-field",
+        "pagination",
+        "popover",
+        "progress-bar",
+        "progress-circle",
+        "rac",
+        "radio",
+        "radio-group",
+        "range-calendar",
+        "scroll-shadow",
+        "search-field",
+        "select",
+        "separator",
+        "sheet",
+        "skeleton",
+        "slider",
+        "spinner",
+        "surface",
+        "switch",
+        "switch-group",
+        "table",
+        "tabs",
+        "tag",
+        "tag-group",
+        "textarea",
+        "textfield",
+        "time-field",
+        "toast",
+        "toggle-button",
+        "toggle-button-group",
+        "toolbar",
+        "tooltip",
+        "typography"
+      ],
+      "anatomy": {
+        "accordion": [
+          "Root",
+          "Item",
+          "Heading",
+          "Trigger",
+          "Panel",
+          "Indicator",
+          "Body"
+        ],
+        "alert": [
+          "Root",
+          "Indicator",
+          "Content",
+          "Title",
+          "Description"
+        ],
+        "alert-dialog": [
+          "Root",
+          "Trigger",
+          "Backdrop",
+          "Container",
+          "Dialog",
+          "Header",
+          "Heading",
+          "Body",
+          "Footer",
+          "Icon",
+          "CloseTrigger"
+        ],
+        "autocomplete": [
+          "Root",
+          "Trigger",
+          "Value",
+          "Indicator",
+          "Popover",
+          "Filter",
+          "ClearButton"
+        ],
+        "avatar": [
+          "Root",
+          "Image",
+          "Fallback"
+        ],
+        "avatar-group": [
+          "Root",
+          "Count"
+        ],
+        "badge": [
+          "Anchor",
+          "Label",
+          "Root"
+        ],
+        "breadcrumbs": [
+          "Root",
+          "Item"
+        ],
+        "button": [
+          "Root"
+        ],
+        "button-group": [
+          "Root",
+          "Separator"
+        ],
+        "calendar": [
+          "Root",
+          "Header",
+          "Heading",
+          "NavButton",
+          "Grid",
+          "GridHeader",
+          "GridBody",
+          "HeaderCell",
+          "Cell",
+          "CellIndicator",
+          "YearPickerTrigger",
+          "YearPickerTriggerHeading",
+          "YearPickerTriggerIndicator",
+          "YearPickerGrid",
+          "YearPickerGridBody",
+          "YearPickerCell"
+        ],
+        "card": [
+          "Root",
+          "Header",
+          "Title",
+          "Description",
+          "Content",
+          "Footer"
+        ],
+        "checkbox": [
+          "Root",
+          "Content",
+          "Control",
+          "Indicator"
+        ],
+        "chip": [
+          "Root",
+          "Label"
+        ],
+        "close-button": [
+          "Root"
+        ],
+        "color-area": [
+          "Root",
+          "Thumb"
+        ],
+        "color-field": [
+          "Root",
+          "Group",
+          "Input",
+          "Prefix",
+          "Suffix"
+        ],
+        "color-input-group": [
+          "Root",
+          "Input",
+          "Prefix",
+          "Suffix"
+        ],
+        "color-picker": [
+          "Root",
+          "Trigger",
+          "Popover"
+        ],
+        "color-slider": [
+          "Root",
+          "Output",
+          "Track",
+          "Thumb"
+        ],
+        "color-swatch": [
+          "Root"
+        ],
+        "color-swatch-picker": [
+          "Root",
+          "Item",
+          "Swatch",
+          "Indicator"
+        ],
+        "combo-box": [
+          "Root",
+          "InputGroup",
+          "Value",
+          "Trigger",
+          "Popover"
+        ],
+        "date-field": [
+          "Root",
+          "Group",
+          "Input",
+          "InputContainer",
+          "Segment",
+          "Prefix",
+          "Suffix"
+        ],
+        "date-input-group": [
+          "Root",
+          "Input",
+          "InputContainer",
+          "Segment",
+          "Prefix",
+          "Suffix"
+        ],
+        "date-picker": [
+          "Root",
+          "Trigger",
+          "TriggerIndicator",
+          "Popover"
+        ],
+        "date-range-picker": [
+          "Root",
+          "Trigger",
+          "TriggerIndicator",
+          "RangeSeparator",
+          "Popover"
+        ],
+        "description": [
+          "Root"
+        ],
+        "disclosure": [
+          "Root",
+          "Heading",
+          "Trigger",
+          "Content",
+          "Body",
+          "Indicator"
+        ],
+        "disclosure-group": [
+          "Root"
+        ],
+        "drawer": [
+          "Root",
+          "Trigger",
+          "Backdrop",
+          "Content",
+          "Dialog",
+          "Header",
+          "Heading",
+          "Body",
+          "Footer",
+          "Handle",
+          "CloseTrigger"
+        ],
+        "dropdown": [
+          "Root",
+          "Trigger",
+          "Popover",
+          "Menu",
+          "Section",
+          "Item",
+          "ItemIndicator",
+          "SubmenuIndicator",
+          "SubmenuTrigger"
+        ],
+        "empty-state": [
+          "Root"
+        ],
+        "error-message": [
+          "Root"
+        ],
+        "field-error": [
+          "Root"
+        ],
+        "fieldset": [
+          "Root",
+          "Legend",
+          "Group",
+          "Actions"
+        ],
+        "form": [
+          "Root"
+        ],
+        "input": [
+          "Root"
+        ],
+        "input-group": [
+          "Root",
+          "Input",
+          "TextArea",
+          "Prefix",
+          "Suffix"
+        ],
+        "input-otp": [
+          "Root",
+          "Group",
+          "Slot",
+          "Separator"
+        ],
+        "kbd": [
+          "Root",
+          "Abbr",
+          "Content"
+        ],
+        "label": [
+          "Root"
+        ],
+        "link": [
+          "Root",
+          "Icon"
+        ],
+        "list-box": [
+          "Root",
+          "Item",
+          "ItemIndicator",
+          "Section"
+        ],
+        "list-box-item": [
+          "Root",
+          "Indicator"
+        ],
+        "menu": [
+          "Root",
+          "Item",
+          "ItemIndicator",
+          "Section"
+        ],
+        "menu-item": [
+          "Root",
+          "Indicator",
+          "SubmenuIndicator"
+        ],
+        "meter": [
+          "Root",
+          "Output",
+          "Track",
+          "Fill"
+        ],
+        "modal": [
+          "Root",
+          "Trigger",
+          "Backdrop",
+          "Container",
+          "Dialog",
+          "Header",
+          "Icon",
+          "Heading",
+          "Body",
+          "Footer",
+          "CloseTrigger"
+        ],
+        "number-field": [
+          "Root",
+          "Group",
+          "Input",
+          "IncrementButton",
+          "DecrementButton"
+        ],
+        "pagination": [
+          "Content",
+          "Ellipsis",
+          "Item",
+          "Link",
+          "Next",
+          "NextIcon",
+          "Previous",
+          "PreviousIcon",
+          "Root",
+          "Summary"
+        ],
+        "popover": [
+          "Root",
+          "Trigger",
+          "Dialog",
+          "Arrow",
+          "Content",
+          "Heading"
+        ],
+        "progress-bar": [
+          "Root",
+          "Output",
+          "Track",
+          "Fill"
+        ],
+        "progress-circle": [
+          "Root",
+          "Track",
+          "TrackCircle",
+          "FillCircle"
+        ],
+        "radio": [
+          "Root",
+          "Content",
+          "Control",
+          "Indicator"
+        ],
+        "radio-group": [
+          "Root"
+        ],
+        "range-calendar": [
+          "Root",
+          "Header",
+          "Heading",
+          "NavButton",
+          "Grid",
+          "GridHeader",
+          "GridBody",
+          "HeaderCell",
+          "Cell",
+          "CellIndicator",
+          "YearPickerTrigger",
+          "YearPickerTriggerHeading",
+          "YearPickerTriggerIndicator",
+          "YearPickerGrid",
+          "YearPickerGridBody",
+          "YearPickerCell"
+        ],
+        "scroll-shadow": [
+          "Root"
+        ],
+        "search-field": [
+          "Root",
+          "Group",
+          "Input",
+          "SearchIcon",
+          "ClearButton"
+        ],
+        "select": [
+          "Root",
+          "Trigger",
+          "Value",
+          "Indicator",
+          "ClearButton",
+          "Popover"
+        ],
+        "separator": [
+          "Root"
+        ],
+        "sheet": [
+          "Backdrop",
+          "Body",
+          "Close",
+          "CloseTrigger",
+          "Content",
+          "Dialog",
+          "Footer",
+          "Handle",
+          "Header",
+          "Heading",
+          "NestedRoot",
+          "Root",
+          "Trigger"
+        ],
+        "skeleton": [
+          "Root"
+        ],
+        "slider": [
+          "Fill",
+          "Mark",
+          "Marks",
+          "Output",
+          "Root",
+          "Steps",
+          "Thumb",
+          "Track"
+        ],
+        "spinner": [
+          "Root"
+        ],
+        "surface": [
+          "Root"
+        ],
+        "switch": [
+          "Root",
+          "Content",
+          "Control",
+          "Thumb",
+          "Icon"
+        ],
+        "switch-group": [
+          "Root"
+        ],
+        "table": [
+          "Body",
+          "Cell",
+          "Collection",
+          "Column",
+          "ColumnResizer",
+          "Content",
+          "Footer",
+          "Header",
+          "LoadMore",
+          "LoadMoreContent",
+          "ResizableContainer",
+          "Root",
+          "Row",
+          "ScrollContainer",
+          "SortableColumnHeader"
+        ],
+        "tabs": [
+          "Root",
+          "ListContainer",
+          "List",
+          "Tab",
+          "Indicator",
+          "Separator",
+          "Panel"
+        ],
+        "tag": [
+          "Root",
+          "RemoveButton"
+        ],
+        "tag-group": [
+          "Root",
+          "List"
+        ],
+        "textarea": [
+          "Root"
+        ],
+        "textfield": [
+          "Root"
+        ],
+        "time-field": [
+          "Root",
+          "Group",
+          "Input",
+          "InputContainer",
+          "Segment",
+          "Prefix",
+          "Suffix"
+        ],
+        "toast": [
+          "Provider",
+          "Content",
+          "Indicator",
+          "Title",
+          "Description",
+          "ActionButton",
+          "CloseButton",
+          "Queue",
+          "toast"
+        ],
+        "toggle-button": [
+          "Root"
+        ],
+        "toggle-button-group": [
+          "Root",
+          "Separator"
+        ],
+        "toolbar": [
+          "Root"
+        ],
+        "tooltip": [
+          "Root",
+          "Trigger",
+          "Content",
+          "Arrow"
+        ],
+        "typography": [
+          "Code",
+          "Heading",
+          "Paragraph",
+          "Prose",
+          "Root"
+        ]
+      }
+    },
+    "framework": "vite",
+    "tailwind": 4
+  }
+}
