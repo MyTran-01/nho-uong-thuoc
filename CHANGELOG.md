@@ -4,6 +4,10 @@ Mỗi lần sửa tài liệu thêm 1 dòng vào "Chưa release". Dòng mới nh
 
 ## Chưa release
 
+- 05/11/2026: Nhắc uống thuốc v1 — có **bản MVP chạy thử trên iPhone ảo**, theo yêu cầu "làm trọn 1 flow, chỉ bản light".
+  - Luồng: onboarding → chụp đơn → app đọc đơn → chụp vỉ → Hôm nay → lời nhắc → đánh dấu đã uống.
+  - Chi tiết, kết quả và phần chưa làm: `features/med-reminder-v1/MVP-NOTES.md`.
+
 - 05/11/2026: Design system — chuyển token v0.1 sang SwiftUI.
   - Có màn thử chạy trên iPhone ảo, kèm bảng tuỳ chỉnh 4 câu hỏi và bảng tương phản tự tính.
   - Ghi 2 chỗ lệch so với HeroUI để chữ dễ đọc hơn.
