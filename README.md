@@ -15,7 +15,7 @@ Bản gốc duy nhất của tài liệu sản phẩm: PRD, user flow, task, ngh
 ## Mục lục
 | File | Là gì | Trạng thái |
 |---|---|---|
-| `features/med-reminder-v1/PRD.md` | PRD bản đầu: nhắc theo lần uống, chụp đơn, ảnh vỉ, ghi nhận | 05/11/2026 · nháp 0.3, chờ duyệt lần cuối |
+| `features/med-reminder-v1/PRD.md` | PRD bản đầu: nhắc theo lần uống, chụp đơn, ảnh vỉ, ghi nhận | 05/11/2026 · **1.0 đã duyệt** |
 | `features/med-reminder-v1/USER_FLOW.md` | Màn hình, đường vào, task, luồng chính | 05/11/2026 · nháp, chờ duyệt ngoại lệ X1 |
 | `process/project.md` | Stack SwiftUI, lưu trên máy, kích thước kiểm | 05/11/2026 · chờ duyệt giả định |
 | `sources/2026-11-05-painpoint-nguoi-dung.md` | Painpoint gốc | 05/11/2026 |

@@ -6,7 +6,7 @@ Repo code: `app/` (chưa tạo). Nhánh: `med-reminder-v1`, cắt từ `main` sa
 ## Gate
 | Gate | Nội dung | Trạng thái |
 |---|---|---|
-| G-PRD | PRD / USER_FLOW được duyệt, Q1–Q26 chốt | **chờ** |
+| G-PRD | PRD / USER_FLOW được duyệt, Q1–Q26 chốt | **đạt 05/11/2026** (Q theo mặc định) |
 | G0 | Token (màu, chữ, bo góc, khoảng cách, light/dark) được duyệt | chờ |
 | G1 | Preview HTML các màn S1–S12, O1–O4 được duyệt | chờ |
 | G2 | Prompt hợp đồng logic / UI được duyệt | chờ |

@@ -1,7 +1,7 @@
 # Nhắc uống thuốc v1 · PRD
 
-Phiên bản 0.3 · 05/11/2026 · Người viết: agent điều phối, theo painpoint và các câu trả lời người phụ trách sản phẩm chốt ngày 05/11/2026.
-Trạng thái: **nháp — chờ duyệt lần cuối**. Đã chốt: Q10, Q17, Q23. Đã bỏ: Q24, Q25 (không còn tự hỏi). Còn mở: các Q khác, mỗi câu đã có mặc định đề xuất.
+Phiên bản 1.0 · 05/11/2026 · Người viết: agent điều phối, theo painpoint và các câu trả lời người phụ trách sản phẩm chốt ngày 05/11/2026.
+Trạng thái: **đã duyệt** — 05/11/2026, người phụ trách sản phẩm duyệt ("đi đến bước tiếp theo"). Các Q còn mở đóng theo mặc định đề xuất. Thêm M14 (lời văn + người lớn tuổi) cùng lúc duyệt.
 
 **Đổi ở 0.3 (góp ý vòng 2):**
 - Bỏ việc app tự hỏi "đã hết thuốc chưa". Người dùng tự bấm khi cần (M13).
@@ -58,6 +58,7 @@ Hiện chưa làm được: chưa có app, đang phải dò đơn giấy 5 lần
 | M11 | Bản ghi giữ **ảnh chụp tại thời điểm uống** (snapshot): tên, số lượng, ảnh của từng thuốc lúc đó. Sau này sửa hay xoá thuốc thì lịch sử cũ không đổi. |
 | M12 | **Chọn thay vì gõ.** Mọi thông tin thuốc trừ tên đều nhập bằng nút chọn (chip), không gõ tay:<br>- liều (½, 1, 2, 3, khác)<br>- đơn vị<br>- thời điểm (trước ăn / trong bữa / sau ăn / buổi chiều / trước ngủ / giờ cố định)<br>- bữa (sáng / trưa / tối)<br>- độ lệch (ví dụ 15 / 30 / 45 / 60 phút)<br>- lịch (hằng ngày / cách 1 ngày / cách 2 ngày / chọn thứ)<br>- số ngày dùng<br>App đọc được gì từ đơn thì chọn sẵn chip đó. Đơn không ghi số phút thì dùng mặc định ("trước ăn" = 30 phút), người dùng chạm chip khác để đổi. Chỉ có tên là ô chữ, và đã điền sẵn tên đọc từ đơn. |
 | M13 | **Hết thuốc dễ đánh dấu.** App **không tự hỏi** — người dùng tự bấm khi cần *(sửa 05/11/2026, góp ý vòng 2)*. Có 2 chỗ, đều thấy ngay, xong trong 1–2 chạm:<br>(1) Màn lần uống: mỗi thuốc có "Hết thuốc" trong menu "…" của dòng.<br>(2) Chi tiết đơn: mỗi thuốc có nút "Đã hết" ngay trên dòng; đầu màn có nút "Hết cả đơn" nổi bật.<br>Mọi lần đánh dấu đều có "Hoàn tác" ngay sau đó. |
+| M14 | **Lời văn tự nhiên, người lớn tuổi dùng dễ.** Nhóm người dùng dễ cần app nhất là người lớn tuổi. Vì vậy:<br>- **Lời văn như người nhà nhắc nhau**, câu ngắn, không thuật ngữ, không viết tắt. Ví dụ: "Tới giờ uống thuốc buổi sáng rồi" thay cho "Lần uống Sáng · sau ăn đã tới hạn". Bảng từ ngữ ở mục 13.<br>- **Chữ to mặc định**: chữ thường tối thiểu 17pt, nội dung chính 20pt trở lên. Theo cỡ chữ của máy (Dynamic Type), kiểm tới AX3.<br>- **Tương phản cao**, đạt AA, chữ chính nhắm AAA (7:1).<br>- **Nút lớn**: nút chính cao ≥ 56pt, kéo hết chiều ngang. Mọi vùng chạm ≥ 48pt.<br>- **Nút luôn có chữ**, không có nút chỉ có icon.<br>- **Không có thao tác "ẩn"** như vuốt dòng hay nhấn giữ làm cách duy nhất; nếu có thì chỉ là đường tắt.<br>- **Mỗi màn một việc chính.**<br>- Thông báo lỗi nói **làm gì tiếp theo**, không nói lỗi gì. *(thêm 05/11/2026)* |
 
 ## 3. Role và quyền
 
@@ -225,7 +226,7 @@ Dữ liệu mẫu dùng trong AC là hư cấu, mô phỏng đúng painpoint g�
 | AC23 | Trên màn lần uống, đánh dấu một thuốc "Hết thuốc" xong trong ≤ 2 chạm. Ở chi tiết đơn, nút "Hết cả đơn" thấy ngay không cần cuộn, xong trong ≤ 2 chạm (bấm + xác nhận). |
 | AC24 | App **không** tự hỏi "đã hết thuốc chưa" ở bất kỳ đâu (không banner, không thông báo). Đơn đủ số ngày dùng chỉ hiện nhãn "Đã đủ N ngày" trong chi tiết đơn, thuốc vẫn được nhắc tới khi người dùng bấm hết. |
 | AC25 | Thêm hoặc sửa một thuốc: mọi trường trừ tên và ghi chú đều chọn bằng chip hoặc bánh xe giờ, **không có bàn phím bật lên**. Đơn không ghi số phút "trước ăn" → chip 30 phút được chọn sẵn. |
-| AC22 | Design: mọi đường vào ≤ 3 bước, mọi task ≤ 3 bước (ngoại lệ đã ghi và được duyệt). Mỗi màn một hành động chính. Kiểm trên iPhone SE / 17 / 17 Pro Max, light + dark, Dynamic Type tới AX1 không vỡ hay cắt chữ. Tương phản đạt AA. VoiceOver đọc tên thuốc cho mỗi ảnh vỉ. Vùng chạm ≥ 44pt. |
+| AC22 | Design: mọi đường vào ≤ 3 bước, mọi task ≤ 3 bước (ngoại lệ đã ghi và được duyệt). Mỗi màn một hành động chính. Kiểm trên iPhone SE / 17 / 17 Pro Max, light + dark, Dynamic Type tới AX3 không vỡ hay cắt chữ. Tương phản đạt AA. VoiceOver đọc tên thuốc cho mỗi ảnh vỉ. Vùng chạm ≥ 48pt, nút chính ≥ 56pt. Không có nút chỉ có icon. |
 
 ## 12. Câu hỏi Q1–Q26 · mặc định đề xuất, chờ duyệt (Q10, Q17, Q23 đã chốt; Q24, Q25 đã bỏ)
 
@@ -259,3 +260,34 @@ Bạn duyệt hoặc sửa. Đổi mặc định thì sửa ở đây và ghi CH
 | Q24 | ~~Bỏ check bao nhiêu lần thì app hỏi "đã hết chưa"?~~ | **Bỏ 05/11/2026:** app không tự hỏi. |
 | Q25 | ~~Trả lời "Vẫn còn" thì bao lâu sau hỏi lại?~~ | **Bỏ 05/11/2026:** app không tự hỏi. |
 | Q26 | Thuốc đã hết có hiện lại không? | Hiện trong chi tiết đơn ở nhóm "Đã hết" (mờ, thu gọn), bấm "Dùng lại" được. Không hiện ở Hôm nay. |
+
+## 13. Lời văn trong app (M14)
+
+Giọng: như con cháu nhắc ông bà, bố mẹ — nhẹ nhàng, rõ ràng, không ra lệnh, không đùa. **Hạn chế xưng hô**; khi cần thì dùng "bạn" (Q27). Câu ≤ 12 chữ khi có thể.
+
+| Tránh | Dùng |
+| --- | --- |
+| Lần uống / slot / cữ | **Giờ uống thuốc** ("Giờ uống thuốc buổi sáng") |
+| Sáng · sau ăn | **Sáng, sau khi ăn** |
+| Ghi nhận / check-in / log | **Đánh dấu đã uống** |
+| Đã uống đủ | **Đã uống đủ** (giữ) |
+| Uống thiếu · 1 thuốc | **Còn 1 thuốc chưa uống** |
+| Bỏ qua lần này | **Hôm nay bỏ cữ này** → chốt ở preview, xem Q28 |
+| Lỡ | **Chưa đánh dấu** |
+| Ghi bù | **Đánh dấu muộn** |
+| Hết cả đơn | **Đã uống hết đơn này** |
+| Hết thuốc | **Thuốc này đã hết** |
+| Hoàn tác | **Hoàn tác** → hoặc "Bấm nhầm, lấy lại" (Q28) |
+| Không đọc được đơn này | **Ảnh hơi mờ, chụp lại giúp nhé** · nút "Chụp lại" / "Tự thêm thuốc" |
+| Thông báo: "Sáng · sau ăn — 3 loại thuốc" | **"Tới giờ uống thuốc rồi — sáng, sau khi ăn (3 loại)"** |
+| Đơn vị "½ viên" | **"Nửa viên"** |
+
+Mọi chuỗi chữ được duyệt ở preview (G1); bảng này là hướng, không phải bản chốt.
+
+Thêm câu hỏi (mặc định dùng luôn, sửa ở preview):
+
+| ID | Câu hỏi | Mặc định đề xuất |
+| --- | --- | --- |
+| Q27 | Xưng hô trong app? | Hạn chế xưng hô; khi cần thì "bạn" |
+| Q28 | Câu chữ cho bỏ qua / hoàn tác? | Chốt khi xem preview, với 2–3 phương án đặt cạnh nhau |
+
