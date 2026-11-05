@@ -12,7 +12,7 @@ Tên tạm của sản phẩm: **Nhớ Thuốc** (*giả định*, xem Q20 trong
 Tài liệu và code tách riêng tuyệt đối: repo code chặn `docs/`, `research/`, `HANDOFF*.md` trong `.gitignore`.
 
 ## Stack
-- App: **SwiftUI native**, chỉ iPhone. *Giả định* iOS tối thiểu: 26 (xem Q17).
+- App: **SwiftUI native**, chỉ iPhone. iOS tối thiểu: 26. Máy thật để thử: **iPhone 15 Pro, iOS 27** (người dùng nói "thì phải", xác nhận khi cắm máy). Máy có Apple Intelligence.
 - Lưu dữ liệu: SwiftData, **chỉ trên máy**, không tài khoản, không server (xem M03).
 - Nhắc: `UserNotifications` (local notification, time-sensitive, có nút thao tác). Tuỳ chọn nhắc kiểu báo thức: AlarmKit (iOS 26+).
 - Đọc đơn: Vision (nhận dạng chữ, chạy trên máy). Tách thuốc từ chữ: luật phân tích + tuỳ chọn Apple Foundation Models (trên máy) nếu thiết bị hỗ trợ.

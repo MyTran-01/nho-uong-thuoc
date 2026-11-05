@@ -1,6 +1,6 @@
 # Nhắc uống thuốc v1 · User flow (Stage 3)
 
-Đọc cùng `PRD.md` (bản 0.2). Đây là feature đầu tiên nên chưa có mã flow cũ.
+Đọc cùng `PRD.md` (bản 0.3). Đây là feature đầu tiên nên chưa có mã flow cũ.
 
 ## 1. Shell và layout
 
@@ -23,14 +23,14 @@
 | Mã | Màn | Kiểu | Trạng thái cần có | Hành động chính |
 |---|---|---|---|---|
 | O1 | Chào mừng: app giải quyết gì, trong 1 màn | Onboarding | Ready | "Bắt đầu" |
-| O2 | Giờ sinh hoạt: **4 mốc** (ăn sáng, ăn trưa, ăn tối, đi ngủ), chọn bằng bánh xe giờ, có giờ gợi ý sẵn | Onboarding | Ready, giờ không hợp lệ (ví dụ ăn trưa trước ăn sáng) | "Tiếp tục" |
+| O2 | Giờ sinh hoạt: **một danh sách 4 dòng** (ăn sáng, ăn trưa, ăn tối, đi ngủ), mỗi dòng **đã hiện sẵn giờ mặc định**. Chạm dòng nào thì bánh xe giờ mở ngay trong dòng đó. | Onboarding | Ready, giờ không hợp lệ (ví dụ ăn trưa trước ăn sáng) | "Tiếp tục" (đồng ý mặc định = 1 chạm) |
 | O3 | Giải thích vì sao cần thông báo → hộp xin quyền của iOS | Onboarding | Ready, đã từ chối | "Bật nhắc nhở" |
 | O4 | Thêm đơn đầu tiên | Onboarding | Ready | "Chụp đơn thuốc" (phụ: "Để sau") |
-| S1 | **Hôm nay**: lần uống tới giờ ở đầu, rồi lần kế tiếp, các lần còn lại, các lần đã xong | Tab | Ready, Empty (chưa có đơn), Hôm nay không có thuốc, Đã xong hết ngày, Banner: chưa bật thông báo / **hỏi hết thuốc – hết đơn** / thiếu ảnh vỉ | Bấm thẻ lần uống → S2 |
+| S1 | **Hôm nay**: lần uống tới giờ ở đầu, rồi lần kế tiếp, các lần còn lại, các lần đã xong | Tab | Ready, Empty (chưa có đơn), Hôm nay không có thuốc, Đã xong hết ngày, Banner: chưa bật thông báo / thiếu ảnh vỉ | Bấm thẻ lần uống → S2 |
 | S2 | **Lần uống**: mỗi thuốc 1 dòng gồm **2 ảnh vuông mặt trước + mặt sau cạnh nhau**, tên, số lượng, cách dùng, checkbox check sẵn. Menu "…" của dòng có "Hết thuốc". | Sheet | Tới giờ, Uống sớm, Lỡ (ghi bù), Đã ghi (đang sửa), Thuốc chưa có ảnh | "Đã uống" (phụ: "Bỏ qua lần này") |
 | D1 | Phóng to ảnh vỉ: **2 ảnh vuông cạnh nhau**, không vuốt. Màn quá hẹp hoặc chữ AX thì xếp trên/dưới, vẫn thấy cả hai cùng lúc. | Sheet nhỏ | Ready, Thiếu 1 hoặc 2 ảnh (ô trống có nút "Chụp") | Đóng |
 | S3 | **Đơn thuốc**: danh sách đơn theo trạng thái | Tab | Ready, Empty, Có đơn sắp hết | "Thêm đơn" |
-| S4 | Chi tiết đơn: đầu màn có nút **"Hết cả đơn"** nổi bật. Danh sách thuốc chia 2 nhóm "Đang dùng" / "Đã hết" (thu gọn). Mỗi thuốc đang dùng có nút **"Đã hết"** ngay trên dòng, không phải vuốt hay mở menu. Cuối màn: thông tin đơn, ảnh đơn gốc, Tạm dừng, Xoá. | Push | Ready, Đã hết (nút đầu màn đổi thành "Dùng lại đơn"), Tạm dừng, Có thuốc thiếu ảnh | "Hết cả đơn" (phụ: "Thêm thuốc") |
+| S4 | Chi tiết đơn: đầu màn có nút **"Hết cả đơn"** nổi bật. Danh sách thuốc chia 2 nhóm "Đang dùng" / "Đã hết" (thu gọn). Mỗi thuốc đang dùng có nút **"Đã hết"** ngay trên dòng, không phải vuốt hay mở menu. Cuối màn: thông tin đơn, ảnh đơn gốc, Tạm dừng, Xoá. | Push | Ready, Đã đủ số ngày (nhãn nhỏ, không hỏi), Đã hết (nút đầu màn đổi thành "Dùng lại đơn"), Tạm dừng, Có thuốc thiếu ảnh | "Hết cả đơn" (phụ: "Thêm thuốc") |
 | S5 | Chi tiết thuốc: ảnh (2 ô vuông), tên, liều, thời điểm, lịch, ghi chú. **Mọi trường trừ tên và ghi chú là chip / bánh xe giờ.** | Push (xem) → sửa tại chỗ | Ready, Đang sửa, Đã hết, Lỗi thiếu trường | "Lưu" khi đang sửa |
 | S6 | Chụp đơn: camera + chọn từ thư viện | Toàn màn | Đang ngắm, Đã chụp (xem lại), Chưa cho quyền camera | Nút chụp → "Dùng ảnh này" |
 | S7 | **Danh sách thuốc đọc từ đơn.** Đầu màn: "Tìm thấy 5 loại thuốc". Mỗi thẻ thuốc có:<br>- dòng nhỏ "Trong đơn: <tên đúng như chữ in>"<br>- **ô tên sửa được ngay tại thẻ**, điền sẵn<br>- chip liều, chip thời điểm, chip độ lệch đã chọn sẵn từ chữ trong đơn<br>Cuối danh sách có "+ Thêm thuốc". | Push trong luồng | Đang đọc (Loading), Ready, Không đọc được (Error), Đọc được 0 thuốc | "Lưu và chụp vỉ" |
@@ -53,7 +53,6 @@ Số khối mỗi màn ≤ 6, số trường mỗi khối ≤ 6. Riêng S5 có 6
 | E5 | Bất kỳ đâu → xem lịch sử | Tab Lịch sử | 1 | ✓ |
 | E6 | Bất kỳ đâu → đổi giờ sinh hoạt | Tab Cài đặt → "Giờ sinh hoạt" → S12 | 2 | ✓ |
 | E7 | Banner "3 thuốc chưa có ảnh vỉ" trên S1 | Bấm banner → S8 cho các thuốc thiếu ảnh | 1 | ✓ |
-| E8 | Thông báo / banner "Đơn Da liễu đủ 30 ngày. Còn uống không?" | Bấm "Hết cả đơn" ngay trên đó | 1 | ✓ |
 
 ## 4. Task (≤ 3 bước, tính từ màn bắt đầu)
 
@@ -72,7 +71,6 @@ Số khối mỗi màn ≤ 6, số trường mỗi khối ≤ 6. Riêng S5 có 6
 | T11 | Đánh dấu 1 thuốc đã hết, ngay lúc đang uống | S2 | 1. Bấm "…" trên dòng thuốc  2. Bấm "Hết thuốc" | Dòng biến mất khỏi lần uống này và các lần sau, toast "Đã đánh dấu hết · Hoàn tác" | 2 |
 | T12 | Đánh dấu 1 thuốc đã hết, từ chi tiết đơn | S4 | 1. Bấm "Đã hết" trên dòng thuốc | Thuốc chuyển xuống nhóm "Đã hết", toast có Hoàn tác | 1 |
 | T13 | Hết cả đơn | S4 | 1. Bấm "Hết cả đơn"  2. Xác nhận | Đơn sang "Đã hết", mọi thuốc của đơn rời các lần uống, huỷ thông báo | 2 |
-| T14 | Trả lời câu hỏi "đã hết chưa" của app | Banner S1 hoặc thông báo | 1. Bấm "Hết rồi" / "Vẫn còn" | Như T12/T13, hoặc banner biến mất 7 ngày | 1 |
 | T15 | Đổi "trước ăn 30 phút" thành 15 phút | S5 hoặc S7 | 1. Chạm chip "15 phút" (+ "Lưu" nếu ở S5) | Giờ của lần uống cập nhật ngay trong xem trước | 1–2 |
 
 **Ngoại lệ chờ duyệt (X1):** việc *nhập trọn một đơn* (T4 + N lần T5) dài hơn 3 bước vì có N thuốc.
@@ -112,7 +110,7 @@ flowchart TD
 
 ### A01. Onboarding (lần đầu mở app)
 1. O1 Chào mừng: một câu "Tới giờ, app nhắc bạn uống viên nào, kèm ảnh vỉ thuốc". Bấm "Bắt đầu".
-2. O2 Giờ sinh hoạt: 4 mốc (ăn sáng, ăn trưa, ăn tối, đi ngủ) có giờ gợi ý sẵn (Q21). Bấm "Tiếp tục".
+2. O2 Giờ sinh hoạt: danh sách 4 mốc đã điền sẵn giờ (Q21). Đúng rồi thì bấm "Tiếp tục". Chưa đúng thì chạm dòng đó, xoay bánh xe giờ, rồi bấm "Tiếp tục".
 3. O3 Giải thích thông báo → hộp xin quyền của iOS.
 4. O4 "Chụp đơn thuốc" → luồng thêm đơn. Hoặc "Để sau" → S1 trạng thái Empty.
 
@@ -129,13 +127,9 @@ Giờ sinh hoạt: ăn sáng 7:00, ăn trưa 12:00, ăn tối 19:00, ngủ 23:00
 
 Ngày không uống kẽm thì lần "Sáng · sau ăn" chỉ còn 2 thuốc. Số lần uống trong ngày vẫn là 5.
 
-### A03. Hết thuốc (người dùng hay quên báo)
-Vì người dùng thường không tự báo thuốc đã hết, app có 3 lớp, lớp sau đỡ cho lớp trước:
+### A03. Hết thuốc
+App không tự hỏi; người dùng tự bấm khi cần (M13). Có 2 chỗ, đều thấy ngay:
 1. **Lúc đang uống (S2):** thấy hết vỉ thì bấm "…" → "Hết thuốc" ngay trên dòng thuốc (T11).
 2. **Lúc xem đơn (S4):** nút "Đã hết" ngay trên từng dòng (T12) và "Hết cả đơn" ở đầu màn (T13).
-3. **App tự hỏi (T14):**
-   - một thuốc bị bỏ check 3 lần liên tiếp (Q24), hoặc
-   - đơn đủ số ngày dùng (Q10).
-   Câu hỏi hiện trên banner Hôm nay; riêng đơn đủ ngày thì có thêm thông báo. Trả lời 1 chạm.
 
 Mọi lần đánh dấu hết đều có "Hoàn tác" trong toast, và "Dùng lại" trong nhóm "Đã hết" của S4.

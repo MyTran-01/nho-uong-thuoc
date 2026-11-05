@@ -21,12 +21,12 @@ Repo code chưa tồn tại. Không có gì để tái dùng ngoài framework c�
 
 ```
 DailyRoutine (1 bản)       breakfast, lunch, dinner, bed : phút-trong-ngày (Int) — onboarding hỏi 4 mốc này
-                           afternoon = 900 (15:00, chỉ sửa trong Cài đặt — Q23)
+                           afternoon = 900 (15:00 mặc định, chỉ sửa trong Cài đặt)
                            defaultBeforeMeal=30, defaultAfterMeal=15, defaultBeforeBed=60 (Q1, Q2)
 Prescription               id, name, photo (file ref), issuedOn, clinic?, startDate, durationDays?,
-                           status: active|paused|ended, endedAt?, stillUsingSnoozeUntil? (Q25), createdAt
+                           status: active|paused|ended, endedAt?, createdAt
 Medication                 id, prescription, nameOnRx (chữ đọc được, chỉ đọc), displayName (điền sẵn = nameOnRx),
-                           status: active|finished, finishedAt?, consecutiveUnchecked: Int (Q24),
+                           status: active|finished, finishedAt?,
                            frontPhoto?, backPhoto? (vuông 1:1), pillPhoto?,
                            doseAmount: Decimal, doseUnit: enum, method: enum?, note?,
                            schedule: daily | everyNDays(n) | weekdays(Set<Int>),
@@ -59,7 +59,6 @@ App một người dùng, không có role. Quyền hệ thống iOS xem PRD mụ
 | `TodayViewModel` | now, slots hôm nay, logs hôm nay | các nhóm theo thứ tự PRD mục 5 + banner duy nhất |
 | `DoseSessionViewModel` | slot, log hiện có? | items có checkbox (mặc định true), `record()`, `skip()` |
 | `RxParser.parse(lines:)` | các dòng chữ từ Vision | `[DraftMedication]`: `nameOnRx`, chip đã chọn (liều, thời điểm, bữa, độ lệch + `offsetSource`), độ tin cậy từng trường. Không thấy số phút thì `offsetSource = default`. |
-| `FinishPrompter` | thuốc, đơn, logs | câu hỏi "đã hết chưa" cần hiện (Q10, Q24, Q25), tối đa 1 câu cùng lúc |
 | `NotificationScheduler.reschedule(now:)` | slots N ngày tới, logs | đăng ký lại thông báo (xem bẫy số 1) |
 | `HistoryViewModel` | tháng | trạng thái mỗi ngày: `allTaken / hasPartial / hasSkippedOrMissed / none` |
 

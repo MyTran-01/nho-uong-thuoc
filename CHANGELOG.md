@@ -4,6 +4,11 @@ Mỗi lần sửa tài liệu thêm 1 dòng vào "Chưa release". Dòng mới nh
 
 ## Chưa release
 
+- 05/11/2026: Nhắc uống thuốc v1 — PRD 0.3 theo góp ý vòng 2:
+  - Bỏ việc app tự hỏi "đã hết thuốc chưa".
+  - Onboarding là danh sách 4 mốc giờ đã điền sẵn, sửa tại dòng.
+  - Buổi chiều mặc định 15:00.
+  - Máy thử: iPhone 15 Pro, iOS 27.
 - 05/11/2026: Nhắc uống thuốc v1 — PRD 0.2 theo góp ý vòng 1:
   - Onboarding chỉ hỏi 4 mốc giờ.
   - Ảnh vỉ là 2 khung vuông nằm cạnh nhau.

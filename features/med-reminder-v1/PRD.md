@@ -1,12 +1,18 @@
 # Nhắc uống thuốc v1 · PRD
 
-Phiên bản 0.2 · 05/11/2026 · Người viết: agent điều phối, theo painpoint và các câu trả lời người phụ trách sản phẩm chốt ngày 05/11/2026.
-Trạng thái: **nháp — chờ duyệt**. Q1–Q26 còn mở, mỗi câu đã có mặc định đề xuất.
+Phiên bản 0.3 · 05/11/2026 · Người viết: agent điều phối, theo painpoint và các câu trả lời người phụ trách sản phẩm chốt ngày 05/11/2026.
+Trạng thái: **nháp — chờ duyệt lần cuối**. Đã chốt: Q10, Q17, Q23. Đã bỏ: Q24, Q25 (không còn tự hỏi). Còn mở: các Q khác, mỗi câu đã có mặc định đề xuất.
+
+**Đổi ở 0.3 (góp ý vòng 2):**
+- Bỏ việc app tự hỏi "đã hết thuốc chưa". Người dùng tự bấm khi cần (M13).
+- Onboarding là một danh sách 4 mốc đã điền sẵn giờ mặc định. Đồng ý thì bấm "Tiếp tục" luôn, muốn đổi thì chạm vào dòng để sửa (M05).
+- Buổi chiều mặc định 15:00.
+- Máy thật: iPhone 15 Pro, iOS 27.
 
 **Đổi ở 0.2 (góp ý vòng 1 của người phụ trách sản phẩm):**
 - Onboarding chỉ hỏi 4 mốc giờ (M05).
 - Ảnh vỉ là 2 khung vuông đặt cạnh nhau, không phải vuốt (M08).
-- Đánh dấu hết thuốc / hết đơn bằng 1 chạm, app chủ động hỏi (M13).
+- Đánh dấu hết thuốc / hết đơn bằng 1 chạm (M13).
 - Màn xác nhận đơn liệt kê tên thuốc trong đơn, sửa tên ngay tại chỗ (M06).
 - Mọi thông tin thuốc nhập bằng cách chọn, không gõ tay (M12).
 
@@ -43,7 +49,7 @@ Hiện chưa làm được: chưa có app, đang phải dò đơn giấy 5 lần
 | M02 | Một người dùng, không cần tài khoản hay đăng nhập. |
 | M03 | Dữ liệu chỉ nằm trên máy: đơn, ảnh, lịch sử. Không có server. Việc đọc chữ trên đơn cũng chạy trên máy (xem mục 10, Chi phí). |
 | M04 | Đơn vị nhắc là **lần uống**. Một lần uống gom mọi thuốc có cùng thời điểm từ mọi đơn đang dùng. Mỗi lần uống có 1 thông báo và 1 bản ghi. |
-| M05 | Giờ uống tính từ **giờ sinh hoạt** người dùng tự khai báo. Onboarding chỉ hỏi **4 mốc: ăn sáng, ăn trưa, ăn tối, đi ngủ**. Mốc "buổi chiều" có giờ mặc định 15:00 (Q23), chỉ chỉnh trong Cài đặt. App không tự học giờ. Mọi ngày trong tuần dùng chung một bộ giờ. *(sửa 05/11/2026: bỏ "thức dậy" và "buổi chiều" khỏi onboarding, theo góp ý vòng 1)* |
+| M05 | Giờ uống tính từ **giờ sinh hoạt** người dùng tự khai báo. Onboarding là **một màn liệt kê 4 mốc: ăn sáng, ăn trưa, ăn tối, đi ngủ**. Mỗi dòng đã điền sẵn giờ mặc định (Q21). Đồng ý thì bấm "Tiếp tục" luôn (1 chạm). Muốn đổi thì chạm vào dòng, bánh xe giờ mở ra ngay trong dòng đó. Mốc "buổi chiều" cố định mặc định **15:00**, không có trong onboarding, chỉnh trong Cài đặt. App không tự học giờ. Mọi ngày trong tuần dùng chung một bộ giờ. *(sửa 05/11/2026, góp ý vòng 1 + 2)* |
 | M06 | Nhập đơn theo 3 bước:<br>(1) Chụp ảnh đơn.<br>(2) App đọc chữ và **liệt kê từng loại thuốc**. Mỗi dòng hiện tên đúng như trong đơn, ô tên **sửa được ngay tại chỗ**, kèm liều và thời điểm đã điền sẵn. Người dùng sửa / thêm / xoá dòng tại đây.<br>(3) Lần lượt chụp vỉ **mặt trước + mặt sau** cho từng thuốc, đầu màn luôn ghi tên thuốc đang chụp.<br>Bước chụp vỉ bỏ qua được, chụp bổ sung sau. Đọc không được (đơn viết tay, ảnh mờ) thì thêm thuốc bằng cách chọn (M12). |
 | M07 | Ghi nhận theo lần uống: 1 bản ghi chứa trạng thái từng thuốc. Checkbox **mặc định check hết**, người dùng bỏ check thuốc chưa uống. |
 | M08 | Ảnh vỉ là hình chính của thuốc trên màn ghi nhận. Mỗi thuốc có **2 khung vuông, mặt trước và mặt sau, đặt cạnh nhau**, không phải vuốt hay chạm mới thấy. Tên thuốc là chữ phụ. Khung chụp vỉ cũng là khung vuông. Chạm vào ảnh để phóng to, vẫn 2 ảnh cạnh nhau. *(sửa 05/11/2026 theo góp ý vòng 1)* |
@@ -51,7 +57,7 @@ Hiện chưa làm được: chưa có app, đang phải dò đơn giấy 5 lần
 | M10 | Lịch dùng mỗi thuốc có 3 kiểu: hằng ngày / cách N ngày / các thứ cố định trong tuần. Có ngày bắt đầu và số ngày dùng (hoặc "dùng tới khi tắt"). |
 | M11 | Bản ghi giữ **ảnh chụp tại thời điểm uống** (snapshot): tên, số lượng, ảnh của từng thuốc lúc đó. Sau này sửa hay xoá thuốc thì lịch sử cũ không đổi. |
 | M12 | **Chọn thay vì gõ.** Mọi thông tin thuốc trừ tên đều nhập bằng nút chọn (chip), không gõ tay:<br>- liều (½, 1, 2, 3, khác)<br>- đơn vị<br>- thời điểm (trước ăn / trong bữa / sau ăn / buổi chiều / trước ngủ / giờ cố định)<br>- bữa (sáng / trưa / tối)<br>- độ lệch (ví dụ 15 / 30 / 45 / 60 phút)<br>- lịch (hằng ngày / cách 1 ngày / cách 2 ngày / chọn thứ)<br>- số ngày dùng<br>App đọc được gì từ đơn thì chọn sẵn chip đó. Đơn không ghi số phút thì dùng mặc định ("trước ăn" = 30 phút), người dùng chạm chip khác để đổi. Chỉ có tên là ô chữ, và đã điền sẵn tên đọc từ đơn. |
-| M13 | **Hết thuốc dễ đánh dấu, app chủ động hỏi.** Người dùng hay quên báo thuốc đã hết, nên app có 4 chỗ:<br>(1) Ngay trên màn lần uống: mỗi thuốc có nút "Hết thuốc".<br>(2) Ở chi tiết đơn: mỗi thuốc có nút "Đã hết", và có nút "Hết cả đơn" nổi bật đầu màn.<br>(3) App tự hỏi khi một thuốc bị bỏ check 3 lần liên tiếp: "Có phải [thuốc] đã hết?" (Q24).<br>(4) App tự hỏi khi đơn đủ số ngày dùng.<br>Mọi chỗ đều xong trong 1–2 chạm, có "Hoàn tác" ngay sau đó. |
+| M13 | **Hết thuốc dễ đánh dấu.** App **không tự hỏi** — người dùng tự bấm khi cần *(sửa 05/11/2026, góp ý vòng 2)*. Có 2 chỗ, đều thấy ngay, xong trong 1–2 chạm:<br>(1) Màn lần uống: mỗi thuốc có "Hết thuốc" trong menu "…" của dòng.<br>(2) Chi tiết đơn: mỗi thuốc có nút "Đã hết" ngay trên dòng; đầu màn có nút "Hết cả đơn" nổi bật.<br>Mọi lần đánh dấu đều có "Hoàn tác" ngay sau đó. |
 
 ## 3. Role và quyền
 
@@ -69,14 +75,14 @@ Quyền hệ thống iOS cần xin, theo nguyên tắc chỉ xin khi cần:
 ## 4. Đối tượng và vòng đời
 
 ### 4.1 Giờ sinh hoạt (mới, một bản duy nhất)
-- **Nguồn:** onboarding hỏi 4 mốc (ăn sáng, ăn trưa, ăn tối, đi ngủ), có giờ gợi ý sẵn (Q21). Mốc "buổi chiều" mặc định 15:00, chỉnh trong Cài đặt (Q23).
+- **Nguồn:** onboarding liệt kê 4 mốc (ăn sáng, ăn trưa, ăn tối, đi ngủ) đã điền sẵn giờ mặc định (Q21), người dùng chạm dòng nào thì sửa dòng đó. Mốc "buổi chiều" mặc định 15:00, chỉnh trong Cài đặt.
 - **Sửa:** ở tab Cài đặt. Trước khi lưu, app hiện trước "các lần uống sẽ dời thành…".
 - **Lan truyền:** chỉ áp cho các lần uống **từ bây giờ trở đi**, bản ghi đã lưu giữ nguyên. Thông báo được xếp lịch lại ngay.
 
 ### 4.2 Đơn thuốc (mới)
 - **Nội dung:** tên đơn (ví dụ "Da liễu", "Thuốc bổ"), ảnh đơn gốc, ngày kê, nơi khám / bác sĩ (không bắt buộc), ngày bắt đầu, số ngày dùng.
 - **Trạng thái:** `Đang dùng` → `Đã hết` (bấm "Hết cả đơn", hoặc tự chuyển khi mọi thuốc trong đơn đã hết) / `Tạm dừng` (bấm tay) → `Đang dùng` (bấm tay).
-- **Đủ số ngày dùng** thì app *hỏi* "Đơn [tên] đã đủ N ngày. Bạn còn uống không?", có 2 nút "Hết cả đơn" / "Vẫn còn". Đơn không tự tắt im lặng, vì bác sĩ có thể dặn uống tiếp (Q10).
+- **Đủ số ngày dùng:** app không tự tắt và không hỏi. Chi tiết đơn hiện nhãn nhỏ "Đã đủ 30 ngày" để người dùng tự quyết bấm "Hết cả đơn" (Q10).
 - **Xoá:** có hộp xác nhận. Lịch sử vẫn giữ nhờ snapshot (Q11).
 - **Lan truyền:** đổi trạng thái hoặc ngày thì các lần uống tương lai cập nhật ngay.
 
@@ -135,15 +141,14 @@ Quyền hệ thống iOS cần xin, theo nguyên tắc chỉ xin khi cần:
 
 Nhắc phụ trên Hôm nay (tối đa 1 banner, theo độ ưu tiên):
 1. Chưa bật thông báo.
-2. **Hỏi hết thuốc / hết đơn (M13)**: "Đơn Da liễu đã đủ 30 ngày. Bạn còn uống không?" hoặc "Kẽm bị bỏ 3 lần liền. Đã hết chưa?", có sẵn 2 nút trả lời ngay trên banner.
-3. Thuốc chưa có ảnh vỉ.
+2. Thuốc chưa có ảnh vỉ.
 
 ## 6. Thao tác tiết kiệm thời gian
 - Nút **"Đã uống đủ"** ngay trên thông báo, ghi nhận mà không cần mở app (Q6).
 - Checkbox check sẵn: trường hợp phổ biến nhất (uống đủ) chỉ cần 1 chạm.
 - Chữ đọc từ đơn được dùng để **chọn sẵn chip** liều và thời điểm. Ví dụ "Ngày 2 lần, mỗi lần 1 viên, sáng – tối sau ăn" → chip 1 viên, sau ăn sáng + sau ăn tối, độ lệch mặc định. "Uống trước ăn sáng 30 phút" → chip trước ăn · sáng · 30 phút.
 - **Không gõ tay** ngoài tên và ghi chú (M12).
-- **Hết thuốc 1 chạm** ngay trên màn lần uống, hoặc trả lời câu hỏi app tự đưa ra (M13).
+- **Hết thuốc 1–2 chạm** ngay trên màn lần uống hoặc chi tiết đơn (M13).
 - Uống sớm: ghi nhận được từ 60 phút trước giờ (Q22). Ghi rồi thì huỷ thông báo của lần đó.
 - Sửa giờ sinh hoạt một chỗ, mọi thuốc tự dời theo.
 
@@ -160,7 +165,6 @@ Nhắc phụ trên Hôm nay (tối đa 1 banner, theo độ ưu tiên):
 | Tới giờ uống | Đúng giờ của lần uống | Time Sensitive: hiện cả khi bật Focus, ở lại tới khi người dùng thao tác | Ghi nhận / bỏ qua |
 | Nhắc lại | Mỗi 10 phút, tối đa 3 lần (Q4) | Như trên | Ghi nhận / bỏ qua |
 | Kiểu báo thức (tuỳ chọn, Q5) | Thay cho thông báo thường, kêu cả khi máy để im lặng | AlarmKit | Ghi nhận / bỏ qua |
-| Hỏi đơn đã hết chưa | 9:00 sáng của ngày đơn đủ số ngày dùng (Q10). Kèm 2 nút "Hết cả đơn" / "Vẫn còn". | Thường | Khi trả lời. Không trả lời thì câu hỏi vẫn nằm trên banner Hôm nay. |
 
 Không có thông báo nào khác. Không quảng cáo.
 
@@ -197,7 +201,7 @@ Dữ liệu mẫu dùng trong AC là hư cấu, mô phỏng đúng painpoint g�
 
 | ID | Tiêu chí |
 | --- | --- |
-| AC01 | Onboarding: **chỉ hỏi 4 mốc** (ăn sáng, ăn trưa, ăn tối, đi ngủ), chọn bằng bánh xe giờ, có giờ gợi ý sẵn, được giải thích rồi mới xin quyền thông báo, cuối cùng tới bước "Thêm đơn đầu tiên". Bỏ qua được bước thêm đơn. |
+| AC01 | Onboarding: một màn liệt kê **4 mốc** (ăn sáng, ăn trưa, ăn tối, đi ngủ) **đã điền sẵn giờ mặc định**. Không sửa gì thì bấm "Tiếp tục" là xong bước này (1 chạm). Chạm một dòng → bánh xe giờ mở ngay trong dòng đó. Sau đó được giải thích rồi mới xin quyền thông báo, cuối cùng tới bước "Thêm đơn đầu tiên". Bỏ qua được bước thêm đơn. |
 | AC02 | Chụp ảnh một đơn in mẫu → trong ≤ 5 giây hiện danh sách thuốc tách được. Mỗi dòng có: tên đúng như trong đơn, ô tên **sửa được ngay tại dòng đó**, số lượng và thời điểm đã chọn sẵn. Sửa / xoá / thêm dòng được trước khi lưu. |
 | AC03 | Bật chế độ máy bay, chụp đơn vẫn đọc được (đọc chạy trên máy). |
 | AC04 | Đọc thất bại (ảnh mờ, viết tay) → app nói rõ "Không đọc được đơn này", cho chụp lại hoặc thêm thuốc bằng cách chọn. Không bị kẹt màn. |
@@ -219,11 +223,11 @@ Dữ liệu mẫu dùng trong AC là hư cấu, mô phỏng đúng painpoint g�
 | AC20 | Giờ ngủ sau 0h (ví dụ 0:30): lần "trước ngủ 1 tiếng" vẫn thuộc ngày đang sống, không bị mất và không bị tính trùng. |
 | AC21 | Chế độ máy bay, đi hết mọi luồng: không lỗi. App không gửi dữ liệu người dùng ra mạng. |
 | AC23 | Trên màn lần uống, đánh dấu một thuốc "Hết thuốc" xong trong ≤ 2 chạm. Ở chi tiết đơn, nút "Hết cả đơn" thấy ngay không cần cuộn, xong trong ≤ 2 chạm (bấm + xác nhận). |
-| AC24 | Một thuốc bị bỏ check 3 lần liên tiếp → app hỏi "Đã hết chưa?" trên banner Hôm nay, trả lời bằng 1 chạm. Đơn đủ số ngày dùng → có thông báo hỏi + banner hỏi. Trả lời "Vẫn còn" thì không hỏi lại trong 7 ngày (Q25). |
+| AC24 | App **không** tự hỏi "đã hết thuốc chưa" ở bất kỳ đâu (không banner, không thông báo). Đơn đủ số ngày dùng chỉ hiện nhãn "Đã đủ N ngày" trong chi tiết đơn, thuốc vẫn được nhắc tới khi người dùng bấm hết. |
 | AC25 | Thêm hoặc sửa một thuốc: mọi trường trừ tên và ghi chú đều chọn bằng chip hoặc bánh xe giờ, **không có bàn phím bật lên**. Đơn không ghi số phút "trước ăn" → chip 30 phút được chọn sẵn. |
 | AC22 | Design: mọi đường vào ≤ 3 bước, mọi task ≤ 3 bước (ngoại lệ đã ghi và được duyệt). Mỗi màn một hành động chính. Kiểm trên iPhone SE / 17 / 17 Pro Max, light + dark, Dynamic Type tới AX1 không vỡ hay cắt chữ. Tương phản đạt AA. VoiceOver đọc tên thuốc cho mỗi ảnh vỉ. Vùng chạm ≥ 44pt. |
 
-## 12. Câu hỏi Q1–Q26 · mặc định đề xuất, chờ duyệt
+## 12. Câu hỏi Q1–Q26 · mặc định đề xuất, chờ duyệt (Q10, Q17, Q23 đã chốt; Q24, Q25 đã bỏ)
 
 Bạn duyệt hoặc sửa. Đổi mặc định thì sửa ở đây và ghi CHANGELOG. Các con số là **cấu hình**, đổi được sau mà không mất dữ liệu.
 
@@ -238,20 +242,20 @@ Bạn duyệt hoặc sửa. Đổi mặc định thì sửa ở đây và ghi CH
 | Q7 | Màn khoá có hiện tên thuốc / ảnh vỉ không? | Không. Chỉ hiện "Sáng · sau ăn — 3 loại thuốc". Có công tắc cho phép hiện. |
 | Q8 | Khi nào một lần uống bị tính là "Lỡ"? | Tới giờ lần uống kế tiếp hoặc sau 3 tiếng, tuỳ cái nào tới trước. Vẫn ghi bù được, có nhãn "ghi bù". |
 | Q9 | Thuốc cách ngày, nếu lỡ 1 lần thì lịch có dời không? | Không dời, luôn tính theo ngày bắt đầu (đúng như đơn bác sĩ) |
-| Q10 | Đơn đủ số ngày dùng thì xử lý sao? Đơn không ghi số ngày thì sao? | **Hỏi** "Bạn còn uống không?" bằng thông báo + banner, không tự tắt. Không ghi số ngày thì vẫn hỏi sau 30 ngày. |
+| Q10 | Đơn đủ số ngày dùng thì xử lý sao? | **Đã chốt 05/11/2026:** không tự tắt, không hỏi. Chỉ hiện nhãn "Đã đủ N ngày" trong chi tiết đơn. |
 | Q11 | Xoá đơn thì lịch sử có mất không? | Không mất (snapshot). Có hộp xác nhận. |
 | Q12 | Ngoài vỉ mặt trước + mặt sau, có chụp riêng viên thuốc không? | Tuỳ chọn, không bắt buộc, không nằm trong luồng chụp chính |
 | Q13 | Nguồn đọc đơn ở v1? | Chỉ đọc trên máy, miễn phí. AI đám mây để sau khi thấy đọc trên máy không đủ tốt. |
 | Q14 | Đơn vị hỗ trợ (đơn da liễu hay có thuốc bôi)? | viên, ½ viên, gói, ml, giọt, lần bôi. Thuốc bôi vẫn nằm trong lần uống như một dòng. |
 | Q15 | Đếm số thuốc còn lại, nhắc mua thêm? | Không làm ở v1 |
 | Q16 | Sao lưu iCloud? | Không làm ở v1. Chấp nhận rủi ro đổi máy mất dữ liệu. |
-| Q17 | iPhone của bạn là đời nào, đang chạy iOS mấy? | *Cần bạn trả lời.* Đề xuất yêu cầu tối thiểu iOS 26 (có AlarmKit). |
+| Q17 | iPhone của bạn là đời nào, đang chạy iOS mấy? | **Đã chốt 05/11/2026:** iPhone 15 Pro, iOS 27 (*xác nhận lại khi cắm máy ở ML-00*). App yêu cầu tối thiểu iOS 26. Máy có Apple Intelligence nên thử được AI trên máy để tách thuốc. |
 | Q18 | Có tài khoản Apple Developer trả phí (99 USD/năm) chưa? | Lúc đầu dùng Apple ID miễn phí để cài lên máy bạn (7 ngày cài lại một lần). Mua khi muốn dùng ổn định. |
 | Q19 | Widget màn hình chính / màn khoá hiện lần uống kế tiếp? | Để v1.1 |
 | Q20 | Tên app? | Tạm gọi "Nhớ Thuốc" |
-| Q21 | Giờ gợi ý sẵn ở onboarding (4 mốc)? | Ăn sáng 7:00 · Ăn trưa 12:00 · Ăn tối 19:00 · Đi ngủ 23:00 |
+| Q21 | Giờ điền sẵn ở onboarding (4 mốc)? | Ăn sáng 7:00 · Ăn trưa 12:00 · Ăn tối 19:00 · Đi ngủ 23:00 |
 | Q22 | Được ghi nhận sớm trước giờ nhắc bao lâu? | Tới 60 phút. Ghi rồi thì huỷ thông báo của lần đó. |
-| Q23 | Mốc "buổi chiều" (cho thuốc uống buổi chiều, không theo bữa) lấy ở đâu? | Mặc định 15:00, không hỏi ở onboarding, chỉnh trong Cài đặt. Hoặc từng thuốc chọn "giờ cố định". |
-| Q24 | Bỏ check bao nhiêu lần liên tiếp thì app hỏi "đã hết thuốc chưa"? | 3 lần |
-| Q25 | Trả lời "Vẫn còn" thì bao lâu sau hỏi lại? | 7 ngày |
+| Q23 | Mốc "buổi chiều" lấy ở đâu? | **Đã chốt 05/11/2026:** mặc định 15:00, không có trong onboarding, chỉnh trong Cài đặt. |
+| Q24 | ~~Bỏ check bao nhiêu lần thì app hỏi "đã hết chưa"?~~ | **Bỏ 05/11/2026:** app không tự hỏi. |
+| Q25 | ~~Trả lời "Vẫn còn" thì bao lâu sau hỏi lại?~~ | **Bỏ 05/11/2026:** app không tự hỏi. |
 | Q26 | Thuốc đã hết có hiện lại không? | Hiện trong chi tiết đơn ở nhóm "Đã hết" (mờ, thu gọn), bấm "Dùng lại" được. Không hiện ở Hôm nay. |

@@ -18,7 +18,7 @@ Repo code: `app/` (chưa tạo). Nhánh: `med-reminder-v1`, cắt từ `main` sa
 | ML-00 | Khảo sát, **không viết code app**: thử Vision đọc tiếng Việt trên iOS đích; kiểm FoundationModels có hỗ trợ tiếng Việt không; xác nhận giới hạn 64 thông báo; kiểm AlarmKit với Apple ID miễn phí | Ghi kết quả + bằng chứng vào HANDOFF. Người phụ trách chọn hướng đọc đơn nếu Vision không đọc được tiếng Việt. |
 | ML-01 | Khởi tạo project Xcode, SwiftData model, `.gitignore` chặn `docs/`, `HANDOFF*.md` | Build chạy được trên simulator; có test model |
 | ML-02 | `SlotEngine`: quy tắc thời điểm → giờ, gộp slot, cách ngày, ngày uống qua 0h | AC06, AC07, AC20 có test tự động xanh |
-| ML-03 | Vòng đời đơn + thuốc: hết thuốc, hết cả đơn, hoàn tác, tạm dừng, câu hỏi "đã hết chưa" (`FinishPrompter`) | AC19, AC24 có test |
+| ML-03 | Vòng đời đơn + thuốc: hết thuốc, hết cả đơn, hoàn tác, tạm dừng, nhãn "đã đủ N ngày" (không tự hỏi) | AC19, AC24 có test |
 | ML-04 | `DoseLog` + snapshot + ràng buộc duy nhất; ghi nhận / thiếu / bỏ qua / lỡ / ghi bù / sửa | AC13, AC15, AC16, AC18 có test |
 | ML-05 | `NotificationScheduler`: xếp lịch cuộn ≤ 64, nhắc lại, huỷ, action "Đã uống đủ", nội dung màn khoá theo Q7 | AC09, AC10, AC14 có test đơn vị và kiểm thủ công trên simulator |
 | ML-06 | `RxParser` + Vision: đọc ảnh → danh sách thuốc nháp với chip chọn sẵn; xử lý lỗi | AC02, AC03, AC04, AC25 trên 5 ảnh đơn mẫu hư cấu |
@@ -34,7 +34,7 @@ Repo code: `app/` (chưa tạo). Nhánh: `med-reminder-v1`, cắt từ `main` sa
 | MU-03 | S3, S4, S5 Đơn thuốc / chi tiết đơn ("Hết cả đơn", "Đã hết") / chi tiết thuốc (toàn chip) | T9–T13, T15 đạt số bước; AC23, AC25 |
 | MU-04 | S6, S7, S8 luồng chụp đơn + chụp vỉ | AC02, AC05; ngoại lệ X1 đúng như đã duyệt |
 | MU-05 | S9, S10 Lịch sử | AC17 |
-| MU-06 | O1–O4 Onboarding, S11, S12 Cài đặt | AC01, AC08 |
+| MU-06 | O1–O4 Onboarding (O2 là danh sách điền sẵn, sửa tại dòng), S11, S12 Cài đặt | AC01, AC08 |
 | MU-07 | Soát accessibility: VoiceOver, Dynamic Type, tương phản, vùng chạm | AC22 |
 
 ## Việc kéo theo
