@@ -1,0 +1,15 @@
+# Product docs live in the separate spec repo, never here.
+docs/
+research/
+specs/
+features/
+prompts/
+log/
+HANDOFF*.md
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
