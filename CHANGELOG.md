@@ -4,6 +4,12 @@ Mỗi lần sửa tài liệu thêm 1 dòng vào "Chưa release". Dòng mới nh
 
 ## Chưa release
 
+- 06/11/2026: Nhắc uống thuốc v1 — hoàn thiện MVP (nhánh `feature/med-reminder-mvp`, chờ duyệt merge).
+  - Bấm lời nhắc mở thẳng màn đánh dấu. Nút "Đã uống đủ" ngay trên lời nhắc.
+  - Lịch sử tháng, chi tiết ngày, đánh dấu muộn.
+  - Tạm dừng đơn. Xem trước giờ uống sẽ dời khi đổi giờ sinh hoạt. Công tắc hiện tên thuốc trên màn khoá.
+  - 19 kiểm tra tự động đều đạt. Chi tiết ở `MVP-NOTES.md`.
+
 - 05/11/2026: Nhắc uống thuốc v1 — có **bản MVP chạy thử trên iPhone ảo**, theo yêu cầu "làm trọn 1 flow, chỉ bản light".
   - Luồng: onboarding → chụp đơn → app đọc đơn → chụp vỉ → Hôm nay → lời nhắc → đánh dấu đã uống.
   - Chi tiết, kết quả và phần chưa làm: `features/med-reminder-v1/MVP-NOTES.md`.
