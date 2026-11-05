@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var loaded = false
     @State private var notificationsOn = true
     @State private var confirmReset = false
+    @AppStorage(NotificationScheduler.showNamesKey) private var showNames = false
 
     private var saved: RoutineTimes { routines.first?.times ?? RoutineTimes() }
 
@@ -25,6 +26,28 @@ struct SettingsView: View {
                         Text(problem).appFont(.secondary).foregroundStyle(theme.danger.color)
                     }
                     if times != saved {
+                        if times.problem == nil, !moves.isEmpty {
+                            HCard {
+                                Text("Các giờ uống sẽ dời thành:")
+                                    .appFont(.headline)
+                                    .foregroundStyle(theme.foreground.color)
+                                ForEach(moves, id: \.title) { m in
+                                    HStack {
+                                        Text(m.title)
+                                            .appFont(.body)
+                                            .foregroundStyle(theme.foreground.color)
+                                        Spacer()
+                                        Text("\(m.from) → \(m.to)")
+                                            .appFont(.body)
+                                            .monospacedDigit()
+                                            .foregroundStyle(theme.foreground.color)
+                                    }
+                                }
+                                Text("Những lần đã đánh dấu vẫn giữ nguyên.")
+                                    .appFont(.secondary)
+                                    .foregroundStyle(theme.muted.color)
+                            }
+                        }
                         Button("Lưu giờ mới") { saveRoutine() }
                             .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
                             .disabled(times.problem != nil)
@@ -43,7 +66,21 @@ struct SettingsView: View {
                             }
                             .buttonStyle(HButtonStyle(variant: .secondary, fullWidth: true))
                         }
-                        Text("Muốn xem lời nhắc trông thế nào? Bấm nút dưới, 5 giây sau điện thoại sẽ báo giờ uống kế tiếp.")
+                        Toggle(isOn: $showNames) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Hiện tên thuốc trong lời nhắc")
+                                    .appFont(.body)
+                                    .foregroundStyle(theme.foreground.color)
+                                Text("Tắt thì người khác nhìn màn hình khoá không biết bạn uống thuốc gì.")
+                                    .appFont(.secondary)
+                                    .foregroundStyle(theme.muted.color)
+                            }
+                        }
+                        .tint(theme.accent.color)
+                        .frame(minHeight: theme.touchMin)
+                        .onChange(of: showNames) { NotificationScheduler.reschedule(in: context) }
+                        Divider().overlay(theme.separator.color)
+                        Text("Muốn xem lời nhắc trông thế nào? Bấm nút dưới, vài giây sau điện thoại sẽ báo giờ uống kế tiếp.")
                             .appFont(.secondary)
                             .foregroundStyle(theme.muted.color)
                         Button("Gửi thử lời nhắc") { sendTest() }
@@ -91,17 +128,36 @@ struct SettingsView: View {
         return slots.first { $0.date > .now && AppStore.log(forKey: $0.key, in: context) == nil } ?? slots.first
     }
 
+    /// Dose times whose clock changes with the edited routine (AC08 preview).
+    private var moves: [(title: String, from: String, to: String)] {
+        let meds = AppStore.activeMeds(in: context).map { m -> MedInfo in
+            var copy = m
+            copy.activeFrom = .distantPast
+            return copy
+        }
+        let day = SlotEngine.calendar.startOfDay(for: .now)
+        // Use a typical day so every-other-day medications show up too.
+        let old = SlotEngine.slots(day: day, routine: saved, meds: meds.map { var c = $0; c.everyNDays = 0; return c })
+        let new = SlotEngine.slots(day: day, routine: times, meds: meds.map { var c = $0; c.everyNDays = 0; return c })
+        return old.compactMap { o in
+            guard let n = new.first(where: { $0.anchor == o.anchor && $0.relation == o.relation }),
+                  n.minuteOfDrugDay != o.minuteOfDrugDay else { return nil }
+            return (o.title, o.timeText, n.timeText)
+        }
+    }
+
     private func saveRoutine() {
+        let n = moves.count
         let r = AppStore.routine(in: context)
         r.times = times
         try? context.save()
         NotificationScheduler.reschedule(in: context)
-        Router.shared.toast = ToastMessage(text: "Đã dời giờ uống theo giờ mới")
+        Router.shared.toast = ToastMessage(text: n > 0 ? "Đã dời \(n) giờ uống" : "Đã lưu giờ mới")
     }
 
     private func sendTest() {
         guard let slot = testSlot else { return }
         NotificationScheduler.sendTest(for: slot)
-        Router.shared.toast = ToastMessage(text: "5 giây nữa sẽ có lời nhắc")
+        Router.shared.toast = ToastMessage(text: "Vài giây nữa sẽ có lời nhắc")
     }
 }

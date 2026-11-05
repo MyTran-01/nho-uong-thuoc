@@ -47,7 +47,8 @@ struct PrescriptionListView: View {
                     Text(rx.name)
                         .appFont(.headline)
                         .foregroundStyle(theme.foreground.color)
-                    Text(rx.status == .active ? "\(active.count) loại thuốc đang dùng" : "Đã uống hết đơn này")
+                    Text(rx.status == .active ? "\(active.count) loại thuốc đang dùng"
+                         : rx.status == .paused ? "Đang tạm dừng" : "Đã uống hết đơn này")
                         .appFont(.secondary)
                         .foregroundStyle(theme.muted.color)
                 }
@@ -74,6 +75,7 @@ struct PrescriptionDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.theme) private var theme
     @State private var confirmEnd = false
+    @State private var confirmPause = false
     @State private var editing: Medication?
     @State private var photoFor: [UUID]?
     @State private var toast: ToastMessage?
@@ -86,10 +88,17 @@ struct PrescriptionDetailView: View {
 
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                if rx.status == .active {
+                switch rx.status {
+                case .active:
                     Button("Đã uống hết đơn này") { confirmEnd = true }
                         .buttonStyle(HButtonStyle(variant: .danger, fullWidth: true))
-                } else {
+                case .paused:
+                    Text("Đơn này đang tạm dừng, app không nhắc.")
+                        .appFont(.body)
+                        .foregroundStyle(theme.muted.color)
+                    Button("Uống tiếp đơn này") { setStatus(.active) }
+                        .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
+                case .ended:
                     Text("Đơn này đã uống hết, app không nhắc nữa.")
                         .appFont(.body)
                         .foregroundStyle(theme.muted.color)
@@ -125,6 +134,16 @@ struct PrescriptionDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                         .accessibilityLabel("Ảnh đơn thuốc gốc")
                 }
+
+                if rx.status == .active {
+                    HCard {
+                        Text("Bác sĩ dặn ngưng ít hôm? Tạm dừng để app thôi nhắc, khi nào uống lại thì bật lại.")
+                            .appFont(.secondary)
+                            .foregroundStyle(theme.muted.color)
+                        Button("Tạm dừng đơn này") { confirmPause = true }
+                            .buttonStyle(HButtonStyle(variant: .outline, fullWidth: true))
+                    }
+                }
             }
             .padding(16)
         }
@@ -137,6 +156,12 @@ struct PrescriptionDetailView: View {
             Button("Chưa", role: .cancel) {}
         } message: {
             Text("App sẽ thôi nhắc mọi thuốc trong đơn. Lịch sử vẫn giữ nguyên.")
+        }
+        .alert("Tạm dừng đơn này?", isPresented: $confirmPause) {
+            Button("Tạm dừng") { setStatus(.paused) }
+            Button("Không", role: .cancel) {}
+        } message: {
+            Text("App sẽ thôi nhắc thuốc của đơn này cho tới khi bạn bật lại.")
         }
         .sheet(item: $editing) { med in
             MedEditSheet(med: med, routine: routine)
@@ -201,8 +226,10 @@ struct PrescriptionDetailView: View {
         rx.status = status
         try? context.save()
         NotificationScheduler.reschedule(in: context)
-        if status == .ended {
-            toast = ToastMessage(text: "Đã thôi nhắc đơn này") { setStatus(old) }
+        switch status {
+        case .ended: toast = ToastMessage(text: "Đã thôi nhắc đơn này") { setStatus(old) }
+        case .paused: toast = ToastMessage(text: "Đã tạm dừng đơn này") { setStatus(old) }
+        case .active: toast = ToastMessage(text: "App sẽ nhắc lại thuốc của đơn này")
         }
     }
 }

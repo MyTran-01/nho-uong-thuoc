@@ -43,9 +43,20 @@ enum AppStore {
         }
     }
 
+    /// Slot keys start with the drug-day key ("2026-11-05#dinner-after").
     static func slot(forKey key: String, in context: ModelContext = context) -> Slot? {
-        let all = slots(around: .now.addingTimeInterval(-36 * 3600), extraDays: 3, in: context)
-        return all.first { $0.key == key }
+        guard let day = day(fromKey: String(key.prefix(10))) else { return nil }
+        return slots(on: day, in: context).first { $0.key == key }
+    }
+
+    static func slots(on day: Date, in context: ModelContext = context) -> [Slot] {
+        SlotEngine.slots(day: day, routine: routine(in: context).times, meds: activeMeds(in: context))
+    }
+
+    static func day(fromKey key: String) -> Date? {
+        let parts = key.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nil }
+        return SlotEngine.calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     }
 
     static func log(forKey key: String, in context: ModelContext = context) -> DoseLog? {

@@ -11,6 +11,7 @@ enum NotificationScheduler {
     static let repeats = 3
     static let repeatInterval: TimeInterval = 10 * 60
     static let maxPending = 64
+    static let showNamesKey = "showNamesOnLockScreen"
 
     static func registerCategories() {
         let taken = UNNotificationAction(identifier: takenAllAction, title: "Đã uống đủ", options: [])
@@ -32,8 +33,12 @@ enum NotificationScheduler {
     static func content(for slot: Slot) -> UNMutableNotificationContent {
         let c = UNMutableNotificationContent()
         c.title = "Tới giờ uống thuốc rồi"
-        // No medication names: the lock screen is visible to others (Q7).
-        c.body = "\(slot.title) (\(slot.items.count) loại thuốc)"
+        // Q7: by default no medication names, the lock screen is visible to others.
+        if UserDefaults.standard.bool(forKey: showNamesKey) {
+            c.body = "\(slot.title): " + slot.items.map { "\($0.name) \($0.doseText.lowercased())" }.joined(separator: ", ")
+        } else {
+            c.body = "\(slot.title) (\(slot.items.count) loại thuốc)"
+        }
         c.sound = .default
         c.categoryIdentifier = category
         c.threadIdentifier = slot.key
@@ -88,7 +93,7 @@ enum NotificationScheduler {
     }
 
     /// Sends a real reminder for `slot` in a few seconds (to try the flow).
-    static func sendTest(for slot: Slot, after seconds: TimeInterval = 5) {
+    static func sendTest(for slot: Slot, after seconds: TimeInterval = 8) {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
         let request = UNNotificationRequest(identifier: "\(slot.key)#test", content: content(for: slot), trigger: trigger)
         UNUserNotificationCenter.current().add(request)

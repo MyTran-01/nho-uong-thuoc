@@ -56,12 +56,16 @@ struct DoseSessionView: View {
         }
         .onAppear(perform: load)
         .sheet(item: $zoom) { BlisterZoomView(item: $0) }
-        .alert("Hôm nay bỏ cữ này?", isPresented: $confirmSkip) {
+        .alert(isToday ? "Hôm nay bỏ cữ này?" : "Ghi là đã bỏ cữ này?", isPresented: $confirmSkip) {
             Button("Bỏ cữ", role: .destructive) { save(skipped: true) }
             Button("Không", role: .cancel) {}
         } message: {
             Text("App sẽ ghi là đã bỏ cữ và không nhắc lần này nữa.")
         }
+    }
+
+    private var isToday: Bool {
+        slot.dayKey == SlotEngine.dayKey(SlotEngine.drugDay(for: .now, routine: AppStore.routine(in: context).times))
     }
 
     private var heading: String {
@@ -115,7 +119,7 @@ struct DoseSessionView: View {
                 .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
                 .disabled(items.isEmpty)
             if existing?.status != .skipped {
-                Button("Hôm nay bỏ cữ này") { confirmSkip = true }
+                Button(isToday ? "Hôm nay bỏ cữ này" : "Ghi là đã bỏ cữ này") { confirmSkip = true }
                     .buttonStyle(HButtonStyle(variant: .tertiary, fullWidth: true))
             }
         }
