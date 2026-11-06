@@ -19,8 +19,17 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 18) {
+                    Text("Cài đặt")
+                        .appFont(.display)
+                        .foregroundStyle(theme.foreground.color)
+                        .accessibilityAddTraits(.isHeader)
+                        .padding(.bottom, 8)
                     SectionTitle("Giờ sinh hoạt")
+                    Text("App dựa vào giờ ăn, giờ ngủ của riêng bạn để nhắc dùng thuốc đúng lúc. Ví dụ thuốc dùng sau ăn sáng sẽ được nhắc ngay sau giờ ăn sáng của bạn.")
+                        .appFont(.secondary)
+                        .foregroundStyle(theme.muted.color)
+                        .fixedSize(horizontal: false, vertical: true)
                     RoutineEditor(times: $times, fields: [.breakfast, .lunch, .afternoon, .dinner, .bed])
                     if let problem = times.problem {
                         Text(problem).appFont(.secondary).foregroundStyle(theme.danger.color)
@@ -28,7 +37,7 @@ struct SettingsView: View {
                     if times != saved {
                         if times.problem == nil, !moves.isEmpty {
                             HCard {
-                                Text("Các giờ uống sẽ dời thành:")
+                                Text("Giờ dùng mới")
                                     .appFont(.headline)
                                     .foregroundStyle(theme.foreground.color)
                                 ForEach(moves, id: \.title) { m in
@@ -43,23 +52,19 @@ struct SettingsView: View {
                                             .foregroundStyle(theme.foreground.color)
                                     }
                                 }
-                                Text("Những lần đã đánh dấu vẫn giữ nguyên.")
-                                    .appFont(.secondary)
-                                    .foregroundStyle(theme.muted.color)
                             }
                         }
-                        Button("Lưu giờ mới") { saveRoutine() }
-                            .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
-                            .disabled(times.problem != nil)
                     }
 
+                    if NotificationScheduler.showsUI {
                     SectionTitle("Nhắc nhở")
                     HCard {
-                        Text(notificationsOn ? "Đã bật thông báo." : "Chưa bật thông báo nên app chưa nhắc được.")
+                        Label(notificationsOn ? "Thông báo đang bật" : "Thông báo đang tắt",
+                              systemImage: notificationsOn ? "bell.fill" : "bell.slash.fill")
                             .appFont(.body)
-                            .foregroundStyle(theme.foreground.color)
+                            .foregroundStyle(notificationsOn ? theme.foreground.color : theme.danger.color)
                         if !notificationsOn {
-                            Button("Mở Cài đặt để bật") {
+                            Button("Bật thông báo") {
                                 if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
                                     UIApplication.shared.open(url)
                                 }
@@ -67,58 +72,55 @@ struct SettingsView: View {
                             .buttonStyle(HButtonStyle(variant: .secondary, fullWidth: true))
                         }
                         Toggle(isOn: $showNames) {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Hiện tên thuốc trong lời nhắc")
-                                    .appFont(.body)
-                                    .foregroundStyle(theme.foreground.color)
-                                Text("Tắt thì người khác nhìn màn hình khoá không biết bạn uống thuốc gì.")
-                                    .appFont(.secondary)
-                                    .foregroundStyle(theme.muted.color)
-                            }
+                            Text("Hiện tên thuốc trên màn hình khoá")
+                                .appFont(.body)
+                                .foregroundStyle(theme.foreground.color)
                         }
                         .tint(theme.accent.color)
                         .frame(minHeight: theme.touchMin)
                         .onChange(of: showNames) { NotificationScheduler.reschedule(in: context) }
                         Divider().overlay(theme.separator.color)
-                        Text("Muốn xem lời nhắc trông thế nào? Bấm nút dưới, vài giây sau điện thoại sẽ báo giờ uống kế tiếp.")
-                            .appFont(.secondary)
-                            .foregroundStyle(theme.muted.color)
                         Button("Gửi thử lời nhắc") { sendTest() }
                             .buttonStyle(HButtonStyle(variant: .secondary, fullWidth: true))
                             .disabled(testSlot == nil)
                         if testSlot == nil {
-                            Text("Thêm đơn thuốc trước đã.")
+                            Text("Chưa có thuốc nào")
                                 .appFont(.secondary)
                                 .foregroundStyle(theme.muted.color)
                         }
                     }
-
-                    SectionTitle("Khác")
-                    HCard {
-                        Text("Xoá hết đơn thuốc, ảnh và lịch sử, rồi làm lại từ đầu.")
-                            .appFont(.secondary)
-                            .foregroundStyle(theme.muted.color)
-                        Button("Bắt đầu lại từ đầu") { confirmReset = true }
-                            .buttonStyle(HButtonStyle(variant: .outline, fullWidth: true))
                     }
+
+                    Button("Xoá hết dữ liệu") { confirmReset = true }
+                        .appFont(.secondary)
+                        .foregroundStyle(theme.danger.color)
+                        .frame(maxWidth: .infinity, minHeight: theme.touchMin)
+                        .padding(.top, 16)
                 }
-                .padding(16)
+                .padding(.horizontal, 20)
+                .padding(.top, 14)
+                .padding(.bottom, 32)
             }
             .background(theme.background.color.ignoresSafeArea())
-            .navigationTitle("Cài đặt")
+            .toolbar(.hidden, for: .navigationBar)
+            .bottomCTA(when: times != saved) {
+                Button("Lưu giờ sinh hoạt") { saveRoutine() }
+                    .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
+                    .disabled(times.problem != nil)
+            }
         }
         .onAppear {
             if !loaded { times = saved; loaded = true }
         }
         .task(id: scenePhase) { notificationsOn = await NotificationScheduler.isAuthorized() }
-        .alert("Xoá hết và làm lại?", isPresented: $confirmReset) {
+        .alert("Xoá hết dữ liệu?", isPresented: $confirmReset) {
             Button("Xoá hết", role: .destructive) {
                 AppStore.resetAll(in: context)
                 onboarded = false
             }
             Button("Không", role: .cancel) {}
         } message: {
-            Text("Mọi đơn thuốc, ảnh vỉ và lịch sử sẽ mất, không lấy lại được.")
+            Text("Thuốc, ảnh và lịch sử sẽ mất hẳn.")
         }
     }
 
@@ -152,12 +154,12 @@ struct SettingsView: View {
         r.times = times
         try? context.save()
         NotificationScheduler.reschedule(in: context)
-        Router.shared.toast = ToastMessage(text: n > 0 ? "Đã dời \(n) giờ uống" : "Đã lưu giờ mới")
+        Router.shared.toast = ToastMessage(text: n > 0 ? "Đã dời \(n) giờ dùng" : "Đã lưu giờ mới")
     }
 
     private func sendTest() {
         guard let slot = testSlot else { return }
         NotificationScheduler.sendTest(for: slot)
-        Router.shared.toast = ToastMessage(text: "Vài giây nữa sẽ có lời nhắc")
+        Router.shared.toast = ToastMessage(text: "Lời nhắc tới sau vài giây")
     }
 }

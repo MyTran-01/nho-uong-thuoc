@@ -29,9 +29,6 @@ struct DoseSessionView: View {
                         Text(heading)
                             .appFont(.title)
                             .foregroundStyle(theme.foreground.color)
-                        Text("Bỏ dấu tích ở thuốc nào chưa uống.")
-                            .appFont(.body)
-                            .foregroundStyle(theme.muted.color)
                     }
                     HCard(padding: 16) {
                         VStack(spacing: 0) {
@@ -56,24 +53,18 @@ struct DoseSessionView: View {
         }
         .onAppear(perform: load)
         .sheet(item: $zoom) { BlisterZoomView(item: $0) }
-        .alert(isToday ? "Hôm nay bỏ cữ này?" : "Ghi là đã bỏ cữ này?", isPresented: $confirmSkip) {
+        .alert("Bỏ cữ \(slot.timeText)?", isPresented: $confirmSkip) {
             Button("Bỏ cữ", role: .destructive) { save(skipped: true) }
             Button("Không", role: .cancel) {}
-        } message: {
-            Text("App sẽ ghi là đã bỏ cữ và không nhắc lần này nữa.")
         }
     }
 
-    private var isToday: Bool {
-        slot.dayKey == SlotEngine.dayKey(SlotEngine.drugDay(for: .now, routine: AppStore.routine(in: context).times))
-    }
-
     private var heading: String {
-        if existing != nil { return "Sửa lại lần uống này" }
+        if existing != nil { return "Sửa lần dùng" }
         let now = Date.now
-        if now < slot.date { return "Sắp tới giờ uống thuốc" }
+        if now < slot.date { return "Sắp tới giờ" }
         if now > slot.date.addingTimeInterval(3 * 3600) { return "Đánh dấu muộn" }
-        return "Tới giờ uống thuốc rồi"
+        return "Tới giờ dùng thuốc"
     }
 
     private func row(_ item: SlotItem) -> some View {
@@ -81,7 +72,7 @@ struct DoseSessionView: View {
                            set: { on in if on { taken.insert(item.medID) } else { taken.remove(item.medID) } })
         return HStack(spacing: 12) {
             Button { zoom = item } label: {
-                BlisterPair(front: item.frontPhoto, back: item.backPhoto, medName: item.name, size: 64)
+                MedThumb(file: item.frontPhoto, form: item.form, name: item.name, size: 72)
             }
             .buttonStyle(.plain)
             .accessibilityHint("Chạm để phóng to ảnh")
@@ -94,9 +85,9 @@ struct DoseSessionView: View {
                     .appFont(.secondary)
                     .foregroundStyle(theme.foreground.color)
                 Menu {
-                    Button("Thuốc này đã hết", systemImage: "archivebox") { markFinished(item) }
+                    Button("Đánh dấu đã hết", systemImage: "archivebox") { markFinished(item) }
                 } label: {
-                    Text("Tuỳ chọn")
+                    Text("Hết thuốc")
                         .appFont(.secondary)
                         .foregroundStyle(theme.accentSoftForeground.color)
                         .underline()
@@ -105,7 +96,7 @@ struct DoseSessionView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            HCheckbox(isOn: isOn, label: "Đã uống \(item.name)")
+            HCheckbox(isOn: isOn, label: "Đã dùng \(item.name)")
         }
         .padding(.vertical, 12)
         .contentShape(Rectangle())
@@ -114,12 +105,12 @@ struct DoseSessionView: View {
 
     private var actions: some View {
         VStack(spacing: 8) {
-            Button(missing == 0 ? (existing == nil ? "Đã uống" : "Lưu thay đổi")
-                   : "Đã uống (còn \(missing) thuốc chưa uống)") { save(skipped: false) }
+            Button(missing == 0 ? (existing == nil ? "Đã dùng" : "Lưu thay đổi")
+                   : "Đã dùng (thiếu \(missing))") { save(skipped: false) }
                 .buttonStyle(HButtonStyle(variant: .primary, fullWidth: true, minHeight: theme.buttonHeight))
                 .disabled(items.isEmpty)
             if existing?.status != .skipped {
-                Button(isToday ? "Hôm nay bỏ cữ này" : "Ghi là đã bỏ cữ này") { confirmSkip = true }
+                Button("Bỏ cữ") { confirmSkip = true }
                     .buttonStyle(HButtonStyle(variant: .tertiary, fullWidth: true))
             }
         }
@@ -148,9 +139,9 @@ struct DoseSessionView: View {
         let log = AppStore.record(slot: visible, taken: taken, skipped: skipped, in: context)
         let text: String
         switch log.status {
-        case .taken: text = "Đã uống đủ · \(slot.title)"
-        case .partial: text = "Đã ghi · còn \(log.missingCount) thuốc chưa uống"
-        case .skipped: text = "Đã bỏ cữ · \(slot.title)"
+        case .taken: text = "Đã dùng đủ"
+        case .partial: text = "Đã ghi · thiếu \(log.missingCount)"
+        case .skipped: text = "Đã bỏ cữ"
         }
         Router.shared.toast = ToastMessage(text: text)
         dismiss()
@@ -164,7 +155,7 @@ struct DoseSessionView: View {
         try? context.save()
         hidden.insert(id)
         NotificationScheduler.reschedule(in: context)
-        toast = ToastMessage(text: "Đã ghi \(item.name) là đã hết") {
+        toast = ToastMessage(text: "\(item.name): đã hết") {
             med.isFinished = false
             med.finishedAt = nil
             try? context.save()

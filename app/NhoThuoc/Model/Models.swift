@@ -27,89 +27,81 @@ final class Routine {
     }
 }
 
-enum PrescriptionStatus: String {
-    case active, paused, ended
-}
-
-@Model
-final class Prescription {
-    var id = UUID()
-    var name: String
-    var photoFile: String?
-    var createdAt = Date()
-    var startDate = Date()
-    var statusRaw = PrescriptionStatus.active.rawValue
-    @Relationship(deleteRule: .cascade, inverse: \Medication.prescription)
-    var medications: [Medication] = []
-
-    init(name: String, photoFile: String?, startDate: Date) {
-        self.name = name
-        self.photoFile = photoFile
-        self.startDate = startDate
-    }
-
-    var status: PrescriptionStatus {
-        get { PrescriptionStatus(rawValue: statusRaw) ?? .active }
-        set { statusRaw = newValue.rawValue }
-    }
-
-    var sortedMedications: [Medication] { medications.sorted { $0.sortIndex < $1.sortIndex } }
-}
-
 @Model
 final class Medication {
     var id = UUID()
-    var nameOnRx: String
-    var displayName: String
+    var name = ""
+    /// "Dùng để làm gì": groups medications on the Thuốc tab. Empty = not given.
+    var purpose = ""
+    var formRaw = MedForm.tablet.rawValue
+    var strength = ""
+    var strengthUnitRaw = StrengthUnit.mg.rawValue
+    var doseHalves = 2
+    var frequencyRaw = Frequency.once.rawValue
+    var customRaw = CustomSchedule.weekdays.rawValue
+    var weekdaysData = Data()
+    var everyNDays = 0
+    var everyHours = 8
+    var customTimesPerDay = 1
+    var timingsData = Data()
+    var photo: String?
+    var isPaused = false
     var isFinished = false
     var finishedAt: Date?
-    var frontPhoto: String?
-    var backPhoto: String?
-    var doseHalves = 2
-    var unitRaw = DoseUnit.vien.rawValue
-    var timingsData = Data()
-    var everyNDays = 0
+    var createdAt = Date()
     var startDate = Date()
-    var sortIndex = 0
-    var prescription: Prescription?
 
-    init(draft: DraftMed, startDate: Date, sortIndex: Int) {
-        self.id = draft.id
-        self.nameOnRx = draft.nameOnRx
-        self.displayName = draft.displayName
-        self.startDate = startDate
-        self.sortIndex = sortIndex
+    init(draft: DraftMed) {
+        id = draft.id
         apply(draft)
     }
 
-    func apply(_ draft: DraftMed) {
-        displayName = draft.displayName.trimmingCharacters(in: .whitespaces).isEmpty ? draft.nameOnRx : draft.displayName
-        doseHalves = draft.doseHalves
-        unitRaw = draft.unit.rawValue
-        timings = draft.timings
-        everyNDays = draft.everyNDays
+    func apply(_ d: DraftMed) {
+        name = d.name.trimmingCharacters(in: .whitespaces)
+        purpose = d.purpose.trimmingCharacters(in: .whitespaces)
+        formRaw = d.form.rawValue
+        strength = d.strength.trimmingCharacters(in: .whitespaces)
+        strengthUnitRaw = d.strengthUnit.rawValue
+        doseHalves = d.doseHalves
+        frequencyRaw = d.frequency.rawValue
+        customRaw = d.custom.rawValue
+        weekdays = d.weekdays
+        everyNDays = d.everyNDays
+        everyHours = d.everyHours
+        customTimesPerDay = d.customTimesPerDay
+        timings = d.timings
+        photo = d.photo
     }
 
     var draft: DraftMed {
-        DraftMed(id: id, nameOnRx: nameOnRx, displayName: displayName, doseHalves: doseHalves,
-                 unit: unit, timings: timings, everyNDays: everyNDays)
+        DraftMed(id: id, name: name, purpose: purpose, form: form, strength: strength,
+                 strengthUnit: StrengthUnit(rawValue: strengthUnitRaw) ?? .mg, doseHalves: doseHalves,
+                 frequency: Frequency(rawValue: frequencyRaw) ?? .once,
+                 custom: CustomSchedule(rawValue: customRaw) ?? .weekdays,
+                 weekdays: weekdays, everyNDays: max(1, everyNDays), everyHours: everyHours,
+                 customTimesPerDay: customTimesPerDay, timings: timings, photo: photo)
     }
 
-    var unit: DoseUnit { DoseUnit(rawValue: unitRaw) ?? .vien }
-    var doseText: String { Dose.text(halves: doseHalves, unit: unit) }
+    var form: MedForm { MedForm(rawValue: formRaw) ?? .tablet }
+    var doseText: String { Dose.text(halves: doseHalves, form: form) }
+    var isActive: Bool { !isPaused && !isFinished }
+
+    var weekdays: Set<Int> {
+        get { (try? JSONDecoder().decode(Set<Int>.self, from: weekdaysData)) ?? [] }
+        set { weekdaysData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+    }
 
     var timings: [Timing] {
         get { (try? JSONDecoder().decode([Timing].self, from: timingsData)) ?? [] }
         set { timingsData = (try? JSONEncoder().encode(newValue)) ?? Data() }
     }
 
-    var hasPhotos: Bool { frontPhoto != nil && backPhoto != nil }
-
     var info: MedInfo {
-        MedInfo(id: id, name: displayName, doseText: doseText, frontPhoto: frontPhoto, backPhoto: backPhoto,
-                rxName: prescription?.name ?? "", timings: timings, everyNDays: everyNDays,
-                startDay: startDate, sortIndex: (prescription.map { Int($0.createdAt.timeIntervalSince1970) } ?? 0) * 100 + sortIndex,
-                activeFrom: prescription?.createdAt ?? .distantPast)
+        let d = draft
+        return MedInfo(id: id, name: name, doseText: doseText, frontPhoto: photo, backPhoto: nil,
+                       purpose: purpose, form: form, timings: timings, everyNDays: d.engineEveryNDays,
+                       weekdays: d.engineWeekdays, startDay: startDate,
+                       sortIndex: Int(createdAt.timeIntervalSince1970), activeFrom: createdAt)
     }
 }
 

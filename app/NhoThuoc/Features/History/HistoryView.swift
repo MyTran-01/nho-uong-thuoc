@@ -16,9 +16,9 @@ enum DayResult {
 
     var label: String {
         switch self {
-        case .allTaken: "Uống đủ"
-        case .somethingMissing: "Có thuốc chưa uống"
-        case .skippedOrNotMarked: "Có lần bỏ cữ hoặc chưa đánh dấu"
+        case .allTaken: "Dùng đủ"
+        case .somethingMissing: "Dùng thiếu"
+        case .skippedOrNotMarked: "Bỏ cữ hoặc chưa dùng"
         case .none: "Không có thuốc"
         case .upcoming: "Chưa tới"
         }
@@ -222,7 +222,7 @@ struct HistoryView: View {
                         .foregroundStyle(theme.foreground.color)
                 }
             }
-            Text("Chạm vào một ngày để xem từng giờ uống.")
+            Text("Chạm ngày để xem.")
                 .appFont(.secondary)
                 .foregroundStyle(theme.muted.color)
         }
@@ -242,7 +242,7 @@ struct DayDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 if entries.isEmpty {
-                    Text("Ngày này không có thuốc cần uống.")
+                    Text("Ngày này không có thuốc.")
                         .appFont(.body)
                         .foregroundStyle(theme.muted.color)
                 }
@@ -276,7 +276,7 @@ struct DayDetailView: View {
                         if let log = e.log {
                             let missing = log.items.filter { !$0.taken }.map(\.name)
                             if log.status == .partial, !missing.isEmpty {
-                                Text("Chưa uống: \(missing.joined(separator: ", "))")
+                                Text("Chưa dùng: \(missing.joined(separator: ", "))")
                                     .appFont(.secondary)
                                     .foregroundStyle(theme.muted.color)
                             }
