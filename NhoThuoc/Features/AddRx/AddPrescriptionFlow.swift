@@ -33,7 +33,7 @@ struct AddPrescriptionFlow: View {
                 case .reading: reading
                 case .unreadable: unreadable
                 case .review:
-                    ReviewDraftsView(title: $title, drafts: $drafts,
+                    ReviewDraftsView(drafts: $drafts,
                                      routine: routines.first?.times ?? RoutineTimes(),
                                      onSave: save)
                 case .blisters(let ids):
@@ -162,7 +162,7 @@ struct AddPrescriptionFlow: View {
             if result.meds.isEmpty {
                 stage = .unreadable
             } else {
-                title = result.title ?? "Đơn thuốc"
+                title = result.title ?? ""
                 drafts = result.meds
                 stage = .review
             }
@@ -171,7 +171,7 @@ struct AddPrescriptionFlow: View {
 
     private func startManual() {
         photo = nil
-        title = "Đơn thuốc"
+        title = ""
         drafts = [DraftMed(nameOnRx: "", displayName: "")]
         stage = .review
     }
@@ -179,7 +179,8 @@ struct AddPrescriptionFlow: View {
     private func save() {
         let routine = routines.first?.times ?? RoutineTimes()
         let start = SlotEngine.drugDay(for: .now, routine: routine)
-        let rx = Prescription(name: title.trimmingCharacters(in: .whitespaces).isEmpty ? "Đơn thuốc" : title,
+        let name = title.trimmingCharacters(in: .whitespaces)
+        let rx = Prescription(name: name.isEmpty ? Self.defaultName(for: .now) : name,
                               photoFile: photo.flatMap { PhotoStore.save($0, maxSide: 2000) },
                               startDate: start)
         context.insert(rx)
@@ -196,11 +197,16 @@ struct AddPrescriptionFlow: View {
         NotificationScheduler.reschedule(in: context)
         stage = .blisters(ids)
     }
+
+    /// Name used when the prescription has no clinic line: "Đơn ngày 6/11".
+    static func defaultName(for date: Date) -> String {
+        let c = SlotEngine.calendar.dateComponents([.day, .month], from: date)
+        return "Đơn ngày \(c.day!)/\(c.month!)"
+    }
 }
 
 /// S7: medications found on the prescription, each editable in place.
 struct ReviewDraftsView: View {
-    @Binding var title: String
     @Binding var drafts: [DraftMed]
     let routine: RoutineTimes
     let onSave: () -> Void
@@ -216,9 +222,6 @@ struct ReviewDraftsView: View {
                     Text("Kiểm lại tên và giờ uống. Chỗ nào chưa đúng thì chạm để sửa.")
                         .appFont(.body)
                         .foregroundStyle(theme.muted.color)
-                }
-                HCard {
-                    HTextField(label: "Tên đơn", text: $title)
                 }
                 ForEach($drafts) { $draft in
                     DraftMedCard(draft: $draft, routine: routine, startExpanded: draft.nameOnRx.isEmpty) {

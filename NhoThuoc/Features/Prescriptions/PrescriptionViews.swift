@@ -76,6 +76,8 @@ struct PrescriptionDetailView: View {
     @Environment(\.theme) private var theme
     @State private var confirmEnd = false
     @State private var confirmPause = false
+    @State private var renaming = false
+    @State private var newName = ""
     @State private var editing: Medication?
     @State private var photoFor: [UUID]?
     @State private var toast: ToastMessage?
@@ -144,6 +146,12 @@ struct PrescriptionDetailView: View {
                             .buttonStyle(HButtonStyle(variant: .outline, fullWidth: true))
                     }
                 }
+
+                Button("Đổi tên đơn") {
+                    newName = rx.name
+                    renaming = true
+                }
+                .buttonStyle(HButtonStyle(variant: .tertiary, fullWidth: true))
             }
             .padding(16)
         }
@@ -156,6 +164,18 @@ struct PrescriptionDetailView: View {
             Button("Chưa", role: .cancel) {}
         } message: {
             Text("App sẽ thôi nhắc mọi thuốc trong đơn. Lịch sử vẫn giữ nguyên.")
+        }
+        .alert("Đổi tên đơn", isPresented: $renaming) {
+            TextField("Tên đơn", text: $newName)
+            Button("Lưu") {
+                let n = newName.trimmingCharacters(in: .whitespaces)
+                if !n.isEmpty {
+                    rx.name = n
+                    try? context.save()
+                    NotificationScheduler.reschedule(in: context)
+                }
+            }
+            Button("Huỷ", role: .cancel) {}
         }
         .alert("Tạm dừng đơn này?", isPresented: $confirmPause) {
             Button("Tạm dừng") { setStatus(.paused) }
