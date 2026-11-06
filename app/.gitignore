@@ -1,0 +1,17 @@
+# Product docs live in the separate spec repo, never here.
+# Anchored to the repo root: macOS is case-insensitive, so an unanchored
+# "features/" would also hide the app's NhoThuoc/Features source folder.
+/docs/
+/research/
+/specs/
+/features/
+/prompts/
+/log/
+HANDOFF*.md
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
