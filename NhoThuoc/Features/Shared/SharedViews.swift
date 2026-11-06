@@ -26,71 +26,59 @@ enum SlotState: Equatable {
     }
 }
 
-struct SlotStateChip: View {
-    let state: SlotState
+// One status palette for timeline dots, card headers and chips.
+extension SlotState {
+    var label: String {
+        switch self {
+        case .upcoming: "Sắp tới"
+        case .due: "Tới giờ · Chưa dùng"
+        case .missed: "Quá giờ · Chưa dùng"
+        case .taken: "Đã dùng đủ"
+        case .partial(let n): "Còn \(n) thuốc chưa dùng"
+        case .skipped: "Đã bỏ cữ"
+        }
+    }
 
-    var body: some View {
-        switch state {
-        case .upcoming: HChip(text: "Sắp tới", color: .accent, variant: .soft)
-        case .due: HChip(text: "Tới giờ", color: .accent)
-        case .missed: HChip(text: "! Chưa đánh dấu", color: .danger)
-        case .taken: HChip(text: "✓ Đã uống đủ", color: .success)
-        case .partial(let n): HChip(text: "◐ Còn \(n) thuốc chưa uống", color: .warning)
-        case .skipped: HChip(text: "– Đã bỏ cữ", color: .neutral)
+    var symbol: String {
+        switch self {
+        case .upcoming: "clock"
+        case .due: "bell.fill"
+        case .missed: "exclamationmark.triangle.fill"
+        case .taken: "checkmark.circle.fill"
+        case .partial: "circle.lefthalf.filled"
+        case .skipped: "minus.circle"
+        }
+    }
+
+    func palette(in theme: Theme) -> (background: Tok, foreground: Tok) {
+        switch self {
+        case .upcoming: (theme.infoSoft, theme.infoSoftForeground)
+        case .due, .partial: (theme.warningSoft, theme.warningSoftForeground)
+        case .missed: (theme.dangerSoft, theme.dangerSoftForeground)
+        case .taken: (theme.successSoft, theme.successSoftForeground)
+        case .skipped: (theme.defaultFill, theme.muted)
         }
     }
 }
 
-// MARK: Blister photos (M08: two squares side by side)
-
-struct BlisterPhoto: View {
-    let file: String?
-    let side: String
-    let medName: String
-    var size: CGFloat = 64
+struct SlotStateChip: View {
+    let state: SlotState
     @Environment(\.theme) private var theme
 
     var body: some View {
-        Group {
-            if let image = PhotoStore.image(file) {
-                Image(uiImage: image).resizable().scaledToFill()
-            } else {
-                ZStack {
-                    theme.defaultFill.color
-                    VStack(spacing: 2) {
-                        Image(systemName: "camera")
-                            .font(.system(size: size * 0.24))
-                        if size >= 90 {
-                            Text("Chưa có ảnh").appFont(.label)
-                        }
-                    }
-                    .foregroundStyle(theme.muted.color)
-                }
-            }
-        }
-        .frame(width: size, height: size)
-        .clipShape(RoundedRectangle(cornerRadius: size * 0.16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: size * 0.16, style: .continuous).strokeBorder(theme.border.color, lineWidth: 1))
-        .accessibilityElement()
-        .accessibilityLabel(file == nil ? "\(medName), chưa có ảnh \(side)" : "Ảnh \(side) vỉ \(medName)")
+        let palette = state.palette(in: theme)
+        Label(state.label, systemImage: state.symbol)
+            .appFont(.chip)
+            .foregroundStyle(palette.foreground.color)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Capsule().fill(palette.background.color))
     }
 }
 
-struct BlisterPair: View {
-    let front: String?
-    let back: String?
-    let medName: String
-    var size: CGFloat = 64
+// MARK: Photo zoom
 
-    var body: some View {
-        HStack(spacing: 6) {
-            BlisterPhoto(file: front, side: "mặt trước", medName: medName, size: size)
-            BlisterPhoto(file: back, side: "mặt sau", medName: medName, size: size)
-        }
-    }
-}
-
-/// D1: enlarged photos, still side by side.
+/// D1: the blister photo, enlarged.
 struct BlisterZoomView: View {
     let item: SlotItem
     @Environment(\.theme) private var theme
@@ -105,11 +93,9 @@ struct BlisterZoomView: View {
                 Text(item.doseText)
                     .appFont(.headline)
                     .foregroundStyle(theme.muted.color)
-                let side = (geo.size.width - 32 - 8) / 2
-                HStack(spacing: 8) {
-                    labeled(BlisterPhoto(file: item.frontPhoto, side: "mặt trước", medName: item.name, size: side), "Mặt trước")
-                    labeled(BlisterPhoto(file: item.backPhoto, side: "mặt sau", medName: item.name, size: side), "Mặt sau")
-                }
+                MedThumb(file: item.frontPhoto, form: item.form, name: item.name,
+                         size: min(geo.size.width - 32, geo.size.height * 0.55))
+                    .frame(maxWidth: .infinity)
                 Spacer(minLength: 0)
                 Button("Đóng") { dismiss() }
                     .buttonStyle(HButtonStyle(variant: .secondary, fullWidth: true, minHeight: theme.buttonHeight))
@@ -118,13 +104,6 @@ struct BlisterZoomView: View {
         }
         .background(theme.background.color.ignoresSafeArea())
         .presentationDetents([.medium, .large])
-    }
-
-    private func labeled(_ photo: BlisterPhoto, _ label: String) -> some View {
-        VStack(spacing: 6) {
-            photo
-            Text(label).appFont(.secondary).foregroundStyle(theme.muted.color)
-        }
     }
 }
 
@@ -287,7 +266,7 @@ struct RoutineEditor: View {
                     Text(Clock.text(times[keyPath: field.keyPath]))
                         .appFont(.headline)
                         .monospacedDigit()
-                        .foregroundStyle(editing == field ? theme.accentForeground.color : theme.accent.color)
+                        .foregroundStyle(editing == field ? theme.accentForeground.color : theme.accentSoftForeground.color)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 6)
                         .background(Capsule().fill(editing == field ? theme.accent.color : theme.accentSoft.color))

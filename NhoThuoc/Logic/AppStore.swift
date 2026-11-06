@@ -7,8 +7,16 @@ import UserNotifications
 @MainActor
 enum AppStore {
     static let container: ModelContainer = {
+        let schema = Schema([Routine.self, Medication.self, DoseLog.self])
+        let config = ModelConfiguration(schema: schema)
+        if let c = try? ModelContainer(for: schema, configurations: config) { return c }
+        // Dev builds: the prescription-based store (before 06/11/2026) cannot migrate. Start fresh.
+        let url = config.url
+        for suffix in ["", "-shm", "-wal"] {
+            try? FileManager.default.removeItem(at: URL(fileURLWithPath: url.path + suffix))
+        }
         do {
-            return try ModelContainer(for: Routine.self, Prescription.self, Medication.self, DoseLog.self)
+            return try ModelContainer(for: schema, configurations: config)
         } catch {
             fatalError("Could not open the data store: \(error)")
         }
@@ -29,7 +37,7 @@ enum AppStore {
     }
 
     static func activeInfos(_ meds: [Medication]) -> [MedInfo] {
-        meds.filter { !$0.isFinished && $0.prescription?.status == .active }.map(\.info)
+        meds.filter(\.isActive).map(\.info)
     }
 
     /// Dose times for the drug day containing `now`, plus `extraDays` following days.
@@ -92,7 +100,6 @@ enum AppStore {
     static func resetAll(in context: ModelContext = context) {
         try? context.delete(model: DoseLog.self)
         try? context.delete(model: Medication.self)
-        try? context.delete(model: Prescription.self)
         try? context.delete(model: Routine.self)
         try? context.save()
         PhotoStore.removeAll()

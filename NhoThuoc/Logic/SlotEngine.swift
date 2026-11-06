@@ -7,7 +7,9 @@ nonisolated struct SlotItem: Codable, Hashable, Sendable {
     var doseText: String
     var frontPhoto: String?
     var backPhoto: String?
-    var rxName: String
+    /// "Dùng để làm gì", may be empty.
+    var purpose: String
+    var form: MedForm = .tablet
 }
 
 /// A dose time ("giờ uống thuốc"). Computed, never stored.
@@ -21,7 +23,7 @@ nonisolated struct Slot: Identifiable, Hashable, Sendable {
     let items: [SlotItem]
 
     var id: String { key }
-    var title: String { SlotEngine.title(anchor: anchor, relation: relation) }
+    var title: String { SlotEngine.title(anchor: anchor, relation: relation, minute: minuteOfDrugDay) }
     var timeText: String { Clock.text(minuteOfDrugDay) }
 }
 
@@ -61,6 +63,10 @@ nonisolated enum SlotEngine {
         case .dinner: return meal(routine.dinner)
         case .afternoon: return routine.afternoon
         case .bed: return routine.bedOnDrugDay - (timing.offsetMinutes ?? routine.beforeBed)
+        case .fixed:
+            let m = ((timing.offsetMinutes ?? 0) % 1440 + 1440) % 1440
+            // Bed after midnight: 0:30 belongs to the evening before, like the bed time.
+            return routine.bed < routine.breakfast && m <= routine.bed ? m + 1440 : m
         }
     }
 
@@ -68,6 +74,7 @@ nonisolated enum SlotEngine {
         let start = calendar.startOfDay(for: med.startDay)
         let diff = calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: day)).day ?? 0
         if diff < 0 { return false }
+        if !med.weekdays.isEmpty, !med.weekdays.contains(calendar.component(.weekday, from: day)) { return false }
         return diff % (med.everyNDays + 1) == 0
     }
 
@@ -75,12 +82,12 @@ nonisolated enum SlotEngine {
     /// Merge rule: same anchor + same relation, or the same clock time,
     /// but never "before meal" with "after meal".
     static func slots(day: Date, routine: RoutineTimes, meds: [MedInfo]) -> [Slot] {
-        struct Group { var anchor: Anchor; var relation: Relation; var minute: Int; var items: [(Int, SlotItem)] }
+        struct Group { var key: String; var anchor: Anchor; var relation: Relation; var minute: Int; var items: [(Int, SlotItem)] }
         var groups: [String: Group] = [:]
         let dayStart = calendar.startOfDay(for: day)
         for med in meds where isDue(med, on: day) {
             let item = SlotItem(medID: med.id, name: med.name, doseText: med.doseText,
-                                frontPhoto: med.frontPhoto, backPhoto: med.backPhoto, rxName: med.rxName)
+                                frontPhoto: med.frontPhoto, backPhoto: med.backPhoto, purpose: med.purpose, form: med.form)
             for timing in Set(med.timings) {
                 let m = minute(of: timing, routine: routine)
                 if dayStart.addingTimeInterval(Double(m) * 60) < med.activeFrom { continue }
@@ -90,7 +97,7 @@ nonisolated enum SlotEngine {
                     if !g.items.contains(where: { $0.1.medID == med.id }) { g.items.append((med.sortIndex, item)) }
                     groups[key] = g
                 } else {
-                    groups[key] = Group(anchor: timing.anchor, relation: timing.relation, minute: m, items: [(med.sortIndex, item)])
+                    groups[key] = Group(key: key, anchor: timing.anchor, relation: timing.relation, minute: m, items: [(med.sortIndex, item)])
                 }
             }
         }
@@ -112,7 +119,7 @@ nonisolated enum SlotEngine {
         return merged
             .sorted { $0.minute < $1.minute }
             .map { g in
-                Slot(key: "\(dk)#\(g.anchor.rawValue)-\(g.relation.rawValue)",
+                Slot(key: "\(dk)#\(g.key)",
                      dayKey: dk,
                      date: calendar.date(byAdding: .minute, value: g.minute, to: start)!,
                      minuteOfDrugDay: g.minute,
@@ -125,9 +132,10 @@ nonisolated enum SlotEngine {
         !((a == .before && b == .after) || (a == .after && b == .before))
     }
 
-    static func title(anchor: Anchor, relation: Relation) -> String {
+    static func title(anchor: Anchor, relation: Relation, minute: Int = 0) -> String {
         let meal: String
         switch anchor {
+        case .fixed: return "Lúc \(Clock.text(minute))"
         case .breakfast: meal = "Sáng"
         case .lunch: meal = "Trưa"
         case .dinner: meal = "Tối"

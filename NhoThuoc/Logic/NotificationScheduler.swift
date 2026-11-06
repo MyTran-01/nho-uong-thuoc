@@ -6,6 +6,10 @@ import UserNotifications
 /// so only the next few days are scheduled and the list is rebuilt often.
 @MainActor
 enum NotificationScheduler {
+    /// Phase 1 (06/11/2026): notifications are not part of this phase, so their UI is hidden
+    /// (Today banner, Settings "Nhắc nhở"). Scheduling code stays; set to true to bring it back.
+    static let showsUI = false
+
     static let category = "DOSE_TIME"
     static let takenAllAction = "TAKEN_ALL"
     static let repeats = 3
@@ -14,9 +18,9 @@ enum NotificationScheduler {
     static let showNamesKey = "showNamesOnLockScreen"
 
     static func registerCategories() {
-        let taken = UNNotificationAction(identifier: takenAllAction, title: "Đã uống đủ", options: [])
+        let taken = UNNotificationAction(identifier: takenAllAction, title: "Đã dùng đủ", options: [])
         let cat = UNNotificationCategory(identifier: category, actions: [taken], intentIdentifiers: [],
-                                         hiddenPreviewsBodyPlaceholder: "Tới giờ uống thuốc rồi",
+                                         hiddenPreviewsBodyPlaceholder: "Tới giờ dùng thuốc rồi",
                                          options: [])
         UNUserNotificationCenter.current().setNotificationCategories([cat])
     }
@@ -32,12 +36,12 @@ enum NotificationScheduler {
 
     static func content(for slot: Slot) -> UNMutableNotificationContent {
         let c = UNMutableNotificationContent()
-        c.title = "Tới giờ uống thuốc rồi"
+        c.title = "Tới giờ dùng thuốc rồi"
         // Q7: by default no medication names, the lock screen is visible to others.
         if UserDefaults.standard.bool(forKey: showNamesKey) {
             c.body = "\(slot.title): " + slot.items.map { "\($0.name) \($0.doseText.lowercased())" }.joined(separator: ", ")
         } else {
-            c.body = "\(slot.title) (\(slot.items.count) loại thuốc)"
+            c.body = "\(slot.title) · \(slot.items.count) thuốc"
         }
         c.sound = .default
         c.categoryIdentifier = category

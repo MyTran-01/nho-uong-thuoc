@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import NhoThuoc
 
-// Fictional sample data mirroring PRD scenario A02 (2 prescriptions, 5 dose times a day).
+// Fictional sample data mirroring PRD scenario A02 (5 dose times a day).
 
 private let cal = SlotEngine.calendar
 
@@ -11,7 +11,7 @@ private func day(_ y: Int, _ m: Int, _ d: Int) -> Date {
 }
 
 private func med(_ name: String, _ timings: [Timing], every: Int = 0, start: Date = day(2026, 11, 5), index: Int) -> MedInfo {
-    MedInfo(id: UUID(), name: name, doseText: "1 viên", rxName: "Mẫu", timings: timings,
+    MedInfo(id: UUID(), name: name, doseText: "1 viên", purpose: "Mẫu", timings: timings,
             everyNDays: every, startDay: start, sortIndex: index)
 }
 
@@ -115,6 +115,62 @@ struct SlotEngineTests {
         let slots = SlotEngine.slots(day: day(2026, 11, 5), routine: RoutineTimes(), meds: sampleMeds)
         #expect(SlotEngine.missedAt(slots[0], next: slots[1]) == slots[1].date)
         #expect(SlotEngine.missedAt(slots[4], next: nil) == slots[4].date.addingTimeInterval(3 * 3600))
+    }
+}
+
+@Suite("Schedules by hand")
+struct ManualScheduleTests {
+    @Test func fixedTimesGroupByClockTime() {
+        let a = med("Chín giờ", [.fixed(9 * 60)], index: 0)
+        let b = med("Cũng chín giờ", [.fixed(9 * 60)], index: 1)
+        let c = med("Một giờ chiều", [.fixed(13 * 60)], index: 2)
+        let slots = SlotEngine.slots(day: day(2026, 11, 5), routine: RoutineTimes(), meds: [a, b, c])
+        #expect(slots.map(\.timeText) == ["9:00", "13:00"])
+        #expect(slots[0].items.count == 2)
+        #expect(slots[0].title == "Lúc 9:00")
+        #expect(Set(slots.map(\.key)).count == 2)
+    }
+
+    @Test func weekdaysOnlyOnChosenDays() {
+        var m = med("T2 T4 T6", [Timing(anchor: .breakfast, relation: .after)], index: 0)
+        m.weekdays = [2, 4, 6]
+        // 2026-11-09 is a Monday.
+        let due = (0..<7).filter { off in
+            let d = cal.date(byAdding: .day, value: off, to: day(2026, 11, 9))!
+            return !SlotEngine.slots(day: d, routine: RoutineTimes(), meds: [m]).isEmpty
+        }
+        #expect(due == [0, 2, 4])
+    }
+
+    @Test func everyEightHoursFromBreakfastStopsAtBed() {
+        let t = TimingSuggest.everyHours(8, start: 7 * 60 + 15, routine: RoutineTimes())
+        let mins = t.map { SlotEngine.minute(of: $0, routine: RoutineTimes()) }
+        #expect(mins.map(Clock.text) == ["7:15", "15:15"]) // 23:15 is after bed (23:00)
+    }
+
+    @Test func fixedAfterMidnightStaysOnTheEvening() {
+        var r = RoutineTimes()
+        r.bed = 60
+        let m = med("Nửa đêm", [.fixed(30)], index: 0)
+        let slots = SlotEngine.slots(day: day(2026, 11, 5), routine: r, meds: [m])
+        #expect(slots.first?.dayKey == "2026-11-05")
+        #expect(cal.component(.day, from: slots[0].date) == 6)
+    }
+
+    @Test func suggestionsFollowMeals() {
+        let r = RoutineTimes()
+        let two = TimingSuggest.forCount(2, keeping: [])
+        #expect(two.map { Clock.text(SlotEngine.minute(of: $0, routine: r)) } == ["7:15", "19:15"])
+        let kept = TimingSuggest.forCount(3, keeping: [Timing(anchor: .breakfast, relation: .before)])
+        #expect(kept.map { Clock.text(SlotEngine.minute(of: $0, routine: r)) } == ["6:30", "12:15", "19:15"])
+    }
+
+    @Test func doseTextByKind() {
+        #expect(Dose.text(halves: 2, form: .capsule) == "1 viên nang")
+        #expect(Dose.text(halves: 1, form: .tablet) == "½ viên nén")
+        #expect(Dose.text(halves: 3, form: .tablet) == "1½ viên nén")
+        #expect(Dose.text(halves: 10, form: .liquid) == "5 ml")
+        #expect(Dose.text(halves: 2, form: .other) == "1 liều")
     }
 }
 

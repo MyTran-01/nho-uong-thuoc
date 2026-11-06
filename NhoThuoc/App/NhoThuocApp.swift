@@ -6,7 +6,7 @@ import OSLog
 nonisolated private let notifyLog = Logger(subsystem: "vn.nhothuoc.app", category: "notify")
 
 enum AppTab: Hashable {
-    case today, prescriptions, history, settings
+    case today, meds, history, settings
 }
 
 /// App-wide navigation state, also driven by notification taps.
@@ -16,7 +16,10 @@ final class Router {
 
     var tab: AppTab = .today
     var openSlotKey: String?
-    var addPrescription = false
+    var addMed = false
+    /// Set by onboarding; RootView presents the add flow after it appears.
+    var addMedAfterOnboarding = false
+    var editMed: Medication?
     var toast: ToastMessage?
 
     private static let pendingKey = "pendingSlotKey"
@@ -53,7 +56,7 @@ struct NhoThuocApp: App {
             }
             .environment(Router.shared)
             .environment(\.theme, Theme())
-            .tint(Theme().accent.color)
+            .tint(Theme().accentSoftForeground.color)
             .preferredColorScheme(.light)
         }
         .modelContainer(AppStore.container)
@@ -98,26 +101,49 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
 }
 
 struct RootView: View {
+    @Environment(\.theme) private var theme
     @Environment(Router.self) private var router
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
 
     var body: some View {
         @Bindable var router = router
-        TabView(selection: $router.tab) {
-            Tab("Hôm nay", systemImage: "sun.max.fill", value: AppTab.today) { TodayView() }
-            Tab("Đơn thuốc", systemImage: "doc.text.fill", value: AppTab.prescriptions) { PrescriptionListView() }
-            Tab("Lịch sử", systemImage: "calendar", value: AppTab.history) { HistoryView() }
-            Tab("Cài đặt", systemImage: "gearshape.fill", value: AppTab.settings) { SettingsView() }
+        VStack(spacing: 0) {
+            TabView(selection: $router.tab) {
+                Tab("Hôm nay", systemImage: "sun.max.fill", value: AppTab.today) {
+                    TodayView().toolbar(.hidden, for: .tabBar)
+                }
+                Tab("Thuốc", systemImage: "pills.fill", value: AppTab.meds) {
+                    MedListView().toolbar(.hidden, for: .tabBar)
+                }
+                // Lịch sử is reserved for a later phase.
+                Tab("Cài đặt", systemImage: "gearshape.fill", value: AppTab.settings) {
+                    SettingsView().toolbar(.hidden, for: .tabBar)
+                }
+            }
+            .toolbar(.hidden, for: .tabBar)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            InsetTabBar(selection: $router.tab)
         }
+        .background(theme.background.color.ignoresSafeArea())
         .sheet(item: $presented, onDismiss: { router.openSlotKey = nil }) { slot in
             DoseSessionView(slot: slot)
         }
         .onChange(of: router.openSlotKey) { presentPending() }
-        .fullScreenCover(isPresented: $router.addPrescription) {
-            AddPrescriptionFlow()
+        .fullScreenCover(isPresented: $router.addMed) {
+            AddMedFlow()
+        }
+        .fullScreenCover(item: $router.editMed) { med in
+            AddMedFlow(editing: med)
         }
         .toast($router.toast)
+        .task {
+            guard router.addMedAfterOnboarding else { return }
+            router.addMedAfterOnboarding = false
+            try? await Task.sleep(for: .milliseconds(600))
+            router.addMed = true
+        }
         .onChange(of: scenePhase, initial: true) { _, phase in
             if phase == .active {
                 NotificationScheduler.reschedule(in: context)

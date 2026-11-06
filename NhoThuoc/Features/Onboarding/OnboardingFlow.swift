@@ -1,9 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// A01: O1 welcome → O2 routine → O3 notifications → O4 first prescription.
+/// A01: O1 welcome → O2 routine (meal and bed times drive the suggested dose times) → O3 first medication.
+/// Notification permission is not asked here yet (06/11/2026: basic flow first).
 struct OnboardingFlow: View {
-    enum Step { case welcome, routine, notifications, firstPrescription }
+    enum Step { case welcome, routine, firstMed }
 
     @AppStorage("onboarded") private var onboarded = false
     @Environment(\.modelContext) private var context
@@ -17,8 +18,7 @@ struct OnboardingFlow: View {
             switch step {
             case .welcome: welcome.transition(.opacity)
             case .routine: routine.transition(.move(edge: .trailing))
-            case .notifications: notifications.transition(.move(edge: .trailing))
-            case .firstPrescription: firstPrescription.transition(.move(edge: .trailing))
+            case .firstMed: firstMed.transition(.move(edge: .trailing))
             }
         }
         .animation(.easeInOut(duration: 0.25), value: step)
@@ -27,89 +27,52 @@ struct OnboardingFlow: View {
     // O1
     private var welcome: some View {
         page(primary: ("Bắt đầu", { step = .routine })) {
-            Spacer(minLength: 24)
-            Image(systemName: "pills.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(theme.accent.color)
-                .accessibilityHidden(true)
+            welcomeIllustration
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, 8)
             Text("Nhớ Thuốc")
                 .appFont(.display)
                 .foregroundStyle(theme.foreground.color)
-            Text("Tới giờ, app nhắc bạn uống viên nào, kèm ảnh vỉ thuốc để nhìn là nhận ra.")
-                .appFont(.headline)
-                .fontWeight(.regular)
-                .foregroundStyle(theme.foreground.color)
-            VStack(alignment: .leading, spacing: 14) {
-                point("camera.fill", "Chụp đơn một lần, app tự xếp giờ uống")
-                point("bell.fill", "Tới giờ thì nhắc, gom thuốc của mọi đơn")
-                point("checkmark.circle.fill", "Uống xong bấm một nút là xong")
-            }
-            .padding(.top, 8)
-            Spacer()
+                .frame(maxWidth: .infinity)
+            Text("Biết đúng thuốc cần dùng, đúng giờ. Dùng xong chỉ cần chạm một lần.")
+                .appFont(.body)
+                .foregroundStyle(theme.muted.color)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
         }
     }
 
     // O2
     private var routine: some View {
         page(primary: ("Tiếp tục", saveRoutine), primaryDisabled: times.problem != nil) {
+            hero("clock")
             Text("Bạn thường ăn và ngủ lúc mấy giờ?")
                 .appFont(.title)
                 .foregroundStyle(theme.foreground.color)
-            Text("App dựa vào đây để tính giờ uống thuốc. Giờ nào chưa đúng thì chạm vào để sửa.")
+            Text("App dựa vào giờ sinh hoạt của riêng bạn để nhắc dùng thuốc đúng lúc. Đổi được sau trong Cài đặt.")
                 .appFont(.body)
                 .foregroundStyle(theme.muted.color)
+                .fixedSize(horizontal: false, vertical: true)
             RoutineEditor(times: $times)
             if let problem = times.problem {
                 Text(problem)
                     .appFont(.secondary)
                     .foregroundStyle(theme.danger.color)
             }
-            Text("Buổi chiều mặc định là 15:00, đổi được trong Cài đặt.")
-                .appFont(.secondary)
-                .foregroundStyle(theme.muted.color)
         }
     }
 
     // O3
-    private var notifications: some View {
-        page(primary: ("Bật nhắc nhở", askPermission), secondary: ("Để sau", { step = .firstPrescription })) {
-            Spacer(minLength: 24)
-            Image(systemName: "bell.badge.fill")
-                .font(.system(size: 56))
-                .foregroundStyle(theme.accent.color)
-                .accessibilityHidden(true)
-            Text("Cho phép app nhắc bạn")
+    private var firstMed: some View {
+        page(primary: ("Thêm thuốc", { finish(addMed: true) }),
+             secondary: ("Để sau", { finish(addMed: false) })) {
+            hero("pills.fill")
+            Text("Bạn đang dùng thuốc gì?")
                 .appFont(.title)
                 .foregroundStyle(theme.foreground.color)
-            Text("Tới giờ uống thuốc, điện thoại sẽ báo. Màn hình khoá chỉ hiện giờ uống và số loại thuốc, không hiện tên thuốc.")
+            Text("Nhập tên, loại thuốc và mỗi ngày dùng mấy lần. App tự gợi ý giờ dùng theo bữa ăn của bạn.")
                 .appFont(.body)
                 .foregroundStyle(theme.muted.color)
-            Text("Bấm “Bật nhắc nhở”, rồi chọn “Cho phép” ở hộp hiện ra.")
-                .appFont(.body)
-                .foregroundStyle(theme.foreground.color)
-            Spacer()
-        }
-    }
-
-    // O4
-    private var firstPrescription: some View {
-        page(primary: ("Chụp đơn thuốc", { finish(addPrescription: true) }),
-             secondary: ("Để sau", { finish(addPrescription: false) })) {
-            Spacer(minLength: 24)
-            Image(systemName: "doc.text.viewfinder")
-                .font(.system(size: 56))
-                .foregroundStyle(theme.accent.color)
-                .accessibilityHidden(true)
-            Text("Thêm đơn thuốc đầu tiên")
-                .appFont(.title)
-                .foregroundStyle(theme.foreground.color)
-            Text("Chụp ảnh đơn bác sĩ kê. App đọc tên thuốc và cách uống, bạn chỉ cần kiểm lại.")
-                .appFont(.body)
-                .foregroundStyle(theme.muted.color)
-            Text("Sau đó chụp vỉ thuốc mặt trước và mặt sau, để lúc uống nhìn là nhận ra.")
-                .appFont(.body)
-                .foregroundStyle(theme.muted.color)
-            Spacer()
         }
     }
 
@@ -119,40 +82,88 @@ struct OnboardingFlow: View {
         let r = AppStore.routine(in: context)
         r.times = times
         try? context.save()
-        step = .notifications
+        step = .firstMed
     }
 
-    private func askPermission() {
-        Task {
-            _ = await NotificationScheduler.requestPermission()
-            step = .firstPrescription
-        }
-    }
-
-    private func finish(addPrescription: Bool) {
-        onboarded = true
+    private func finish(addMed: Bool) {
         Router.shared.tab = .today
-        if addPrescription {
-            Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(400))
-                Router.shared.addPrescription = true
-            }
-        }
+        // RootView opens the add flow once it is on screen.
+        Router.shared.addMedAfterOnboarding = addMed
+        onboarded = true
     }
 
     // MARK: Layout
 
-    private func point(_ icon: String, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 22))
-                .foregroundStyle(theme.accent.color)
-                .frame(width: 28)
-                .accessibilityHidden(true)
-            Text(text)
-                .appFont(.body)
-                .foregroundStyle(theme.foreground.color)
+    private var welcomeIllustration: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .fill(LinearGradient(colors: [theme.accentSoft.color, theme.surface.color],
+                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+            Circle()
+                .fill(theme.accent.color.opacity(0.14))
+                .frame(width: 180, height: 180)
+                .offset(x: 105, y: -85)
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Label("NHẮC UỐNG THUỐC", systemImage: "bell.fill")
+                        .appFont(.label)
+                        .foregroundStyle(theme.accentSoftForeground.color)
+                    Spacer()
+                    Image(systemName: "pills.fill")
+                        .foregroundStyle(theme.accentSoftForeground.color)
+                }
+                Spacer()
+                Text("07:30")
+                    .appFont(.display)
+                    .monospacedDigit()
+                    .foregroundStyle(theme.foreground.color)
+                Text("Sáng, sau khi ăn")
+                    .appFont(.headline)
+                    .foregroundStyle(theme.foreground.color)
+                HStack(spacing: 10) {
+                    Image(systemName: "pills.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(theme.accentSoftForeground.color)
+                        .frame(width: 50, height: 50)
+                        .background(RoundedRectangle(cornerRadius: 14).fill(theme.accentSoft.color))
+                    Text("Đúng thuốc, đúng lúc")
+                        .appFont(.secondary)
+                        .foregroundStyle(theme.foreground.color)
+                    Spacer()
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 26))
+                        .foregroundStyle(theme.accentSoftForeground.color)
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 18).fill(theme.cardBackground.color))
+            }
+            .padding(22)
         }
+        .frame(height: 280)
+        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .shadow(color: theme.accent.color.opacity(0.12), radius: 20, y: 10)
+        .accessibilityHidden(true)
+    }
+
+    private var stepNumber: Int {
+        switch step {
+        case .welcome: 1
+        case .routine: 2
+        case .firstMed: 3
+        }
+    }
+
+    private func hero(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 44, weight: .medium))
+            .foregroundStyle(theme.accentSoftForeground.color)
+            .frame(width: 92, height: 92)
+            .background(RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(LinearGradient(colors: [theme.accentSoft.color, theme.surface.color],
+                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .shadow(color: theme.accent.color.opacity(0.10), radius: 10, y: 5))
+            .padding(.bottom, 12)
+            .accessibilityHidden(true)
     }
 
     private func page<Content: View>(primary: (String, () -> Void),
@@ -160,10 +171,28 @@ struct OnboardingFlow: View {
                                      secondary: (String, () -> Void)? = nil,
                                      @ViewBuilder content: () -> Content) -> some View {
         VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("\(stepNumber)/3")
+                    .appFont(.label)
+                    .foregroundStyle(theme.accentSoftForeground.color)
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(theme.defaultFill.color)
+                        Capsule().fill(theme.accent.color)
+                            .frame(width: geometry.size.width * CGFloat(stepNumber) / 3)
+                    }
+                }
+                .frame(height: 5)
+                .accessibilityLabel("Bước \(stepNumber) trên 3")
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+            .padding(.bottom, 8)
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) { content() }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 24)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 30)
+                    .padding(.bottom, 24)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -176,8 +205,10 @@ struct OnboardingFlow: View {
                         .buttonStyle(HButtonStyle(variant: .tertiary, fullWidth: true))
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, 24)
+            .padding(.top, 14)
+            .padding(.bottom, 10)
+            .background(theme.background.color)
         }
     }
 }
