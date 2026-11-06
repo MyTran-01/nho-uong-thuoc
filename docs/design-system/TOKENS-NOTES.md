@@ -1,5 +1,31 @@
 # Nhớ Thuốc · Token notes
 
+## Vòng chỉnh độ sâu và nút · 06/11/2026
+
+- Theo phản hồi người phụ trách: CTA chính có gradient xanh bạc hà và bóng nhẹ; thẻ dùng gradient trắng → xám rất nhạt cùng bóng mềm. Các nút phụ dùng chữ nhỏ hơn, nền phẳng; lựa chọn dạng chip dùng nền xanh nhạt thay vì màu đặc.
+- Bỏ viền ở thẻ, ảnh vỉ, nút đánh dấu và khung chụp; giữ viền mảnh ở ô nhập để vùng nhập vẫn nhận biết được. Trạng thái đủ/thiếu/lỗi chuyển sang nền màu nhạt, vẫn có biểu tượng và chữ.
+- Tương phản chữ trên chip trạng thái sáng: đủ 7.97:1, thiếu 6.37:1, lỗi 7.04:1. Đã xem Hôm nay và onboarding trên iPhone 17 Pro ảo, bản sáng.
+
+## UI đồng bộ màn đang dùng · 06/11/2026
+
+- Người phụ trách sản phẩm chọn tham chiếu giao diện thoáng, nền trắng, thẻ xám rất nhạt, chữ đậm rõ, hình minh hoạ lớn ở onboarding và thao tác chính trong vùng ngón cái. Giữ xanh bạc hà đã chọn ở vòng trước.
+- Token sáng hiện hành: nền `#ffffff`, thẻ `#f5f6f8`, nút phụ `#e9eaed`, accent `#00c98e`. Chữ trên accent dùng `#063b2d`, chữ xanh trên nền nhạt dùng `#006b4d`.
+- Màn đang dùng đã áp style chung: onboarding, Hôm nay, danh sách/chi tiết đơn, thêm đơn/thuốc, chụp vỉ, Cài đặt và sheet sửa thuốc. Lịch sử đang ẩn, chưa nằm trong vòng này.
+- Đã kiểm trực tiếp trên iPhone 17 Pro simulator các màn Hôm nay, Đơn thuốc, chi tiết đơn, Cài đặt, thêm đơn và onboarding O1/O2. Chưa kiểm hình ảnh ở kích thước iPhone nhỏ và dark mode; app hiện khoá light mode.
+
+## Điều chỉnh theo ảnh tham chiếu · 06/11/2026
+
+- Người phụ trách sản phẩm đổi màu chính từ xanh dương sang xanh bạc hà trong ảnh Habitual. Mẫu màu từ vùng vòng tròn trong ảnh xấp xỉ `#00c98e`.
+- App dùng `#00c98e` sáng / `#35d6a4` tối; chữ trên nền xanh dùng `#063b2d` để đủ tương phản (5.83:1 ở theme sáng). Chữ xanh trên nền xanh nhạt dùng `#006b4d`.
+- Màn Hôm nay thêm dải tiến độ các lần uống, giữ trạng thái có nhãn và hình riêng để không dựa vào màu. Các màn khác nhận màu brand mới qua token chung.
+- G0 toàn bộ design system vẫn cần duyệt lại; mục xanh dương trước đó chỉ còn là lịch sử thay đổi.
+
+## Cập nhật style · 06/11/2026
+
+- Người phụ trách sản phẩm chọn **xanh dương hiện đại** cho màu chính và yêu cầu làm thoáng màn Hôm nay cùng onboarding, tham khảo độ rõ ràng, sạch sẽ của Airbnb trên iPhone.
+- Token đang áp dụng trong app: xanh `#1d4ed8` (sáng) / `#60a5fa` (tối), nền `#f7f9fc` / `#10131b`, thẻ `#ffffff` / `#1b2130`. Token Playground dùng cùng màu nguồn trong `heroui-lab/src/tokens.css`.
+- Cỡ chữ và vùng chạm lớn giữ theo M14. Cần review lại G0 cho toàn bộ cặp màu, đặc biệt trạng thái dark và các màn ngoài Hôm nay/onboarding. Bản G0 v0.1 bên dưới là lịch sử đề xuất ngọc lam, chưa còn là màu app hiện hành.
+
 ## v0.1 · 05/11/2026 · đề xuất, **chờ duyệt G0**
 
 - **Nền:** HeroUI v3.2.7 (`@heroui/react`, `@heroui/styles`), Tailwind v4.
