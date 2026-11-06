@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// One medication on S7 / S5. Everything except the name is chosen by tapping (M12).
+/// Order: name → times of day → details of each chosen time (shown only when chosen)
+/// → amount per dose → schedule.
 struct DraftMedCard: View {
     @Binding var draft: DraftMed
     let routine: RoutineTimes
@@ -9,6 +11,10 @@ struct DraftMedCard: View {
     @State private var expanded = false
     @Environment(\.theme) private var theme
 
+    private static let times: [(Anchor, String)] = [
+        (.breakfast, "Sáng"), (.lunch, "Trưa"), (.afternoon, "Chiều"), (.dinner, "Tối"), (.bed, "Khi ngủ"),
+    ]
+
     var body: some View {
         HCard {
             if !draft.nameOnRx.isEmpty {
@@ -16,7 +22,7 @@ struct DraftMedCard: View {
                     .appFont(.secondary)
                     .foregroundStyle(theme.muted.color)
             }
-            HTextField(label: "Tên để dễ nhớ", text: $draft.displayName)
+            HTextField(label: "Tên loại thuốc", text: $draft.displayName)
 
             Text(summary)
                 .appFont(.body)
@@ -45,54 +51,47 @@ struct DraftMedCard: View {
     }
 
     private var summary: String {
-        let times = draft.timings
-            .map { (SlotEngine.minute(of: $0, routine: routine), $0) }
-            .sorted { $0.0 < $1.0 }
-            .map { "\(Clock.text($0.0)) \(SlotEngine.title(anchor: $0.1.anchor, relation: $0.1.relation).lowercased())" }
+        let times = sortedTimings
+            .map { "\(Clock.text(SlotEngine.minute(of: $0, routine: routine))) \(SlotEngine.title(anchor: $0.anchor, relation: $0.relation).lowercased())" }
         let schedule = ["mỗi ngày", "cách 1 ngày", "cách 2 ngày"][min(draft.everyNDays, 2)]
         let when = times.isEmpty ? "chưa chọn giờ uống" : times.joined(separator: "; ")
         return "\(Dose.text(halves: draft.doseHalves, unit: draft.unit)) · \(when) · \(schedule)"
     }
 
+    private var sortedTimings: [Timing] {
+        draft.timings.sorted { SlotEngine.minute(of: $0, routine: routine) < SlotEngine.minute(of: $1, routine: routine) }
+    }
+
     // MARK: Editor
 
     private var editor: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            group("Mỗi lần uống") {
+        VStack(alignment: .leading, spacing: 20) {
+            group("Thời gian uống") {
                 FlowLayout(spacing: 8, lineSpacing: 8) {
-                    ForEach([1, 2, 4, 6], id: \.self) { h in
-                        chip(h == 1 ? "Nửa" : "\(h / 2)", on: draft.doseHalves == h) { draft.doseHalves = h }
+                    ForEach(Self.times, id: \.0) { anchor, label in
+                        chip(label, on: timing(anchor) != nil) { toggleTime(anchor) }
                     }
                 }
+                if draft.timings.isEmpty {
+                    Text("Chọn ít nhất một buổi.")
+                        .appFont(.secondary)
+                        .foregroundStyle(theme.danger.color)
+                }
+                // Details appear only for the chosen times, in the order of the day.
+                ForEach(Self.times.filter { timing($0.0) != nil }, id: \.0) { anchor, label in
+                    detail(anchor, label)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
+
+            group("Mỗi lần uống") {
+                amountStepper
+                rowLabel("Loại")
                 FlowLayout(spacing: 8, lineSpacing: 8) {
                     ForEach(DoseUnit.allCases, id: \.self) { u in
-                        chip(u.label, on: draft.unit == u) { draft.unit = u }
+                        chip(u.label, on: draft.unit == u) { setUnit(u) }
                     }
                 }
-            }
-
-            group("Uống lúc nào") {
-                mealRow("Bữa sáng", .breakfast)
-                mealRow("Bữa trưa", .lunch)
-                mealRow("Bữa tối", .dinner)
-                rowLabel("Khác")
-                FlowLayout(spacing: 8, lineSpacing: 8) {
-                    chip("Buổi chiều", on: has(.afternoon)) { toggle(.afternoon, .at) }
-                    chip("Trước khi ngủ", on: has(.bed)) { toggle(.bed, .before) }
-                }
-            }
-
-            if draft.timings.contains(where: { $0.relation == .before && $0.anchor != .bed }) {
-                offsetGroup("Trước ăn bao lâu?", relation: .before, isBed: false,
-                            options: [15, 30, 45, 60], fallback: routine.beforeMeal)
-            }
-            if draft.timings.contains(where: { $0.relation == .after }) {
-                offsetGroup("Sau ăn bao lâu?", relation: .after, isBed: false,
-                            options: [0, 15, 30, 60], fallback: routine.afterMeal)
-            }
-            if has(.bed) {
-                offsetGroup("Trước khi ngủ bao lâu?", relation: .before, isBed: true,
-                            options: [15, 30, 60, 120], fallback: routine.beforeBed)
             }
 
             group("Lịch uống") {
@@ -104,26 +103,59 @@ struct DraftMedCard: View {
             }
         }
         .padding(.top, 4)
+        .animation(.easeInOut(duration: 0.2), value: draft.timings)
     }
 
-    private func mealRow(_ label: String, _ anchor: Anchor) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            rowLabel(label)
-            FlowLayout(spacing: 8, lineSpacing: 8) {
-                chip("Trước ăn", on: has(anchor, .before)) { toggle(anchor, .before) }
-                chip("Trong bữa", on: has(anchor, .during)) { toggle(anchor, .during) }
-                chip("Sau ăn", on: has(anchor, .after)) { toggle(anchor, .after) }
+    // MARK: Time detail
+
+    @ViewBuilder
+    private func detail(_ anchor: Anchor, _ label: String) -> some View {
+        if let t = timing(anchor) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(anchor == .bed ? "Khi ngủ" : "Buổi \(label.lowercased())")
+                        .appFont(.headline)
+                        .foregroundStyle(theme.foreground.color)
+                    Spacer()
+                    Text("Uống lúc \(Clock.text(SlotEngine.minute(of: t, routine: routine)))")
+                        .appFont(.secondary)
+                        .monospacedDigit()
+                        .foregroundStyle(theme.accentSoftForeground.color)
+                }
+                switch anchor {
+                case .afternoon:
+                    Text("Giờ buổi chiều đổi được trong Cài đặt.")
+                        .appFont(.secondary)
+                        .foregroundStyle(theme.muted.color)
+                case .bed:
+                    rowLabel("Trước khi ngủ bao lâu?")
+                    offsetChips(anchor, t, options: [15, 30, 60, 120], fallback: routine.beforeBed)
+                default:
+                    FlowLayout(spacing: 8, lineSpacing: 8) {
+                        chip("Trước ăn", on: t.relation == .before) { setRelation(anchor, .before) }
+                        chip("Trong bữa", on: t.relation == .during) { setRelation(anchor, .during) }
+                        chip("Sau ăn", on: t.relation == .after) { setRelation(anchor, .after) }
+                    }
+                    if t.relation == .before {
+                        rowLabel("Trước ăn bao lâu?")
+                        offsetChips(anchor, t, options: [15, 30, 45, 60], fallback: routine.beforeMeal)
+                    } else if t.relation == .after {
+                        rowLabel("Sau ăn bao lâu?")
+                        offsetChips(anchor, t, options: [0, 15, 30, 60], fallback: routine.afterMeal)
+                    }
+                }
             }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(theme.background.color))
         }
     }
 
-    private func offsetGroup(_ title: String, relation: Relation, isBed: Bool, options: [Int], fallback: Int) -> some View {
-        let current = draft.timings.first { ($0.anchor == .bed) == isBed && $0.relation == relation }?.offsetMinutes ?? fallback
-        return group(title) {
-            FlowLayout(spacing: 8, lineSpacing: 8) {
-                ForEach(options, id: \.self) { m in
-                    chip(offsetLabel(m), on: current == m) { setOffset(m, relation: relation, isBed: isBed) }
-                }
+    private func offsetChips(_ anchor: Anchor, _ t: Timing, options: [Int], fallback: Int) -> some View {
+        let current = t.offsetMinutes ?? fallback
+        return FlowLayout(spacing: 8, lineSpacing: 8) {
+            ForEach(options, id: \.self) { m in
+                chip(offsetLabel(m), on: current == m) { setOffset(anchor, m) }
             }
         }
     }
@@ -134,30 +166,67 @@ struct DraftMedCard: View {
         return "\(m) phút"
     }
 
+    // MARK: Amount
+
+    private var amountStepper: some View {
+        let step = draft.unit.stepHalves
+        return HStack(spacing: 10) {
+            Button("− Bớt") { draft.doseHalves = max(step, draft.doseHalves - step) }
+                .buttonStyle(HButtonStyle(variant: .outline, compact: true))
+                .disabled(draft.doseHalves <= step)
+                .accessibilityLabel("Bớt")
+            Text(Dose.text(halves: draft.doseHalves, unit: draft.unit))
+                .appFont(.headline)
+                .monospacedDigit()
+                .foregroundStyle(theme.foreground.color)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .accessibilityAddTraits(.updatesFrequently)
+            Button("+ Thêm") { draft.doseHalves = min(step * 40, draft.doseHalves + step) }
+                .buttonStyle(HButtonStyle(variant: .outline, compact: true))
+                .accessibilityLabel("Thêm")
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Mỗi lần uống")
+    }
+
+    private func setUnit(_ u: DoseUnit) {
+        guard u != draft.unit else { return }
+        let wasCount = draft.unit == .vien || draft.unit == .goi
+        let isCount = u == .vien || u == .goi
+        draft.unit = u
+        // Keep the amount between viên and gói, start fresh for other kinds.
+        draft.doseHalves = wasCount && isCount ? Dose.snapped(draft.doseHalves, unit: u) : u.defaultHalves
+    }
+
     // MARK: Timing helpers
 
-    private func has(_ anchor: Anchor, _ relation: Relation? = nil) -> Bool {
-        draft.timings.contains { $0.anchor == anchor && (relation == nil || $0.relation == relation) }
+    private func timing(_ anchor: Anchor) -> Timing? {
+        draft.timings.first { $0.anchor == anchor }
     }
 
-    /// One relation per meal: choosing "Sau ăn" replaces "Trước ăn" for that meal.
-    private func toggle(_ anchor: Anchor, _ relation: Relation) {
-        if has(anchor, relation) {
+    private func toggleTime(_ anchor: Anchor) {
+        if timing(anchor) != nil {
             draft.timings.removeAll { $0.anchor == anchor }
         } else {
-            let sibling = draft.timings.first { $0.relation == relation && $0.anchor != .bed && anchor != .bed }
-            draft.timings.removeAll { $0.anchor == anchor }
-            draft.timings.append(Timing(anchor: anchor, relation: relation,
-                                        offsetMinutes: sibling?.offsetMinutes,
-                                        offsetSource: sibling?.offsetSource ?? .standard))
+            let relation: Relation = switch anchor {
+            case .afternoon: .at
+            case .bed: .before
+            default: .after
+            }
+            draft.timings.append(Timing(anchor: anchor, relation: relation))
         }
     }
 
-    private func setOffset(_ minutes: Int, relation: Relation, isBed: Bool) {
-        for i in draft.timings.indices where (draft.timings[i].anchor == .bed) == isBed && draft.timings[i].relation == relation {
-            draft.timings[i].offsetMinutes = minutes
-            draft.timings[i].offsetSource = .user
-        }
+    private func setRelation(_ anchor: Anchor, _ relation: Relation) {
+        guard let i = draft.timings.firstIndex(where: { $0.anchor == anchor }), draft.timings[i].relation != relation else { return }
+        draft.timings[i] = Timing(anchor: anchor, relation: relation)
+    }
+
+    private func setOffset(_ anchor: Anchor, _ minutes: Int) {
+        guard let i = draft.timings.firstIndex(where: { $0.anchor == anchor }) else { return }
+        draft.timings[i].offsetMinutes = minutes
+        draft.timings[i].offsetSource = .user
     }
 
     // MARK: Layout
@@ -175,7 +244,7 @@ struct DraftMedCard: View {
     }
 
     private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .appFont(.headline)
                 .foregroundStyle(theme.foreground.color)

@@ -58,6 +58,18 @@ struct RxParserTests {
         #expect(d.timings == [Timing(anchor: .breakfast, relation: .before, offsetMinutes: 15, offsetSource: .rx)])
     }
 
+    @Test func doseTextCoversEveryUnit() {
+        #expect(Dose.text(halves: 1, unit: .vien) == "Nửa viên")
+        #expect(Dose.text(halves: 3, unit: .vien) == "1 viên rưỡi")
+        #expect(Dose.text(halves: 4, unit: .goi) == "2 gói")
+        #expect(Dose.text(halves: 5, unit: .ml) == "2,5 ml")
+        #expect(Dose.text(halves: 10, unit: .ml) == "5 ml")
+        #expect(Dose.text(halves: 4, unit: .giot) == "2 giọt")
+        #expect(Dose.text(halves: 2, unit: .lanBoi) == "1 lần bôi")
+        #expect(Dose.snapped(3, unit: .giot) == 2)
+        #expect(Dose.snapped(1, unit: .ml) == 5)
+    }
+
     @Test func unreadableTextGivesNoMedications() {
         #expect(RxParser.parse(lines: ["@@ ##", "mờ quá"]).meds.isEmpty)
     }

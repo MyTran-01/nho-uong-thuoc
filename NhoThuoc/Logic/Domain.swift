@@ -39,12 +39,45 @@ nonisolated enum DoseUnit: String, Codable, CaseIterable, Hashable, Sendable {
     }
 }
 
+nonisolated extension DoseUnit {
+    /// Step of the − / + buttons, in halves.
+    var stepHalves: Int {
+        switch self {
+        case .vien, .goi: 1        // ½
+        case .ml: 5                // 2,5 ml
+        case .giot, .lanBoi: 2     // 1
+        }
+    }
+
+    /// Amount picked when switching to this unit.
+    var defaultHalves: Int {
+        switch self {
+        case .ml: 10               // 5 ml
+        default: 2                 // 1
+        }
+    }
+}
+
 nonisolated enum Dose {
     /// Amount is stored in halves (1 = ½) so "nửa viên" stays exact.
     static func text(halves: Int, unit: DoseUnit) -> String {
-        if halves == 1 { return "Nửa \(unit.label)" }
-        if halves % 2 == 0 { return "\(halves / 2) \(unit.label)" }
-        return "\(halves / 2) \(unit.label) rưỡi"
+        switch unit {
+        case .vien, .goi:
+            if halves == 1 { return "Nửa \(unit.label)" }
+            if halves % 2 == 0 { return "\(halves / 2) \(unit.label)" }
+            return "\(halves / 2) \(unit.label) rưỡi"
+        case .ml:
+            let whole = halves / 2
+            return halves % 2 == 0 ? "\(whole) ml" : "\(whole),5 ml"
+        case .giot, .lanBoi:
+            return "\(max(1, halves / 2)) \(unit.label)"
+        }
+    }
+
+    /// Snaps an amount to the unit's step, never below one step.
+    static func snapped(_ halves: Int, unit: DoseUnit) -> Int {
+        let step = unit.stepHalves
+        return max(step, (halves / step) * step)
     }
 }
 
