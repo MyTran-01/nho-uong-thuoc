@@ -4,6 +4,8 @@ Mỗi lần sửa tài liệu thêm 1 dòng vào "Chưa release". Dòng mới nh
 
 ## Chưa release
 
+- 06/11/2026: Nhắc uống thuốc v1 — làm lại phần chỉnh thuốc (S7/S5) theo góp ý: ô "Tên loại thuốc"; chọn buổi Sáng / Trưa / Chiều / Tối / Khi ngủ; chọn buổi nào thì chỉ hiện chi tiết của buổi đó (trước/trong/sau ăn, bao lâu, giờ uống tính sẵn); "Mỗi lần uống" là chọn loại + nút Bớt/Thêm (½ viên, 2,5 ml, 1 giọt mỗi bước); lịch uống giữ nguyên.
+
 - 06/11/2026: Nhắc uống thuốc v1 — bỏ ô "Tên đơn" ở màn kiểm danh sách thuốc (S7) theo góp ý: không ưu tiên. Tên đơn lấy từ dòng phòng khám trên đơn, không có thì đặt "Đơn ngày 6/11". Đổi tên được ở cuối màn chi tiết đơn.
 
 - 06/11/2026: Nhắc uống thuốc v1 — hoàn thiện MVP (nhánh `feature/med-reminder-mvp`, chờ duyệt merge).
