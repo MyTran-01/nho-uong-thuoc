@@ -30,7 +30,7 @@ Repo code: `app/` (chưa tạo). Nhánh: `med-reminder-v1`, cắt từ `main` sa
 | Task | Việc | Xong khi |
 |---|---|---|
 | MU-01 | Tab bar + S1 Hôm nay (mọi trạng thái) | Khớp preview, 3 kích thước iPhone, light/dark, AX1 |
-| MU-02 | S2 Lần uống (2 ảnh vuông cạnh nhau, "Hết thuốc") + D1 | AC11, AC12, AC13, AC23 trên simulator |
+| MU-02 | S2 Lần uống (1 ảnh vỉ vuông, "Hết thuốc") + D1 | AC11, AC12, AC13, AC23 trên simulator |
 | MU-03 | S3, S4, S5 Đơn thuốc / chi tiết đơn ("Hết cả đơn", "Đã hết") / chi tiết thuốc (toàn chip) | T9–T13, T15 đạt số bước; AC23, AC25 |
 | MU-04 | S6, S7, S8 luồng chụp đơn + chụp vỉ | AC02, AC05; ngoại lệ X1 đúng như đã duyệt |
 | MU-05 | S9, S10 Lịch sử | AC17 |

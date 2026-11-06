@@ -10,19 +10,29 @@
   --radius: 0.75rem;
   --field-radius: calc(var(--radius) * 1.25);
 
-  --background: #f2f2f7;
+  --background: #f5f6f8;
+  --card-background: #ffffff;
   --foreground: #111114;
-  --surface: #ffffff;
+  --surface: #f5f6f8;
   --surface-foreground: #111114;
   --overlay: #ffffff;
   --overlay-foreground: #111114;
   --muted: #52525b;
 
-  --default: #e4e4e7;
+  --default: #e9eaed;
   --default-foreground: #111114;
 
-  --accent: #0f766e;
-  --accent-foreground: #ffffff;
+  --accent: #00c98e;
+  --accent-highlight: #4ed7b0;
+  --accent-foreground: #063b2d;
+  --info-soft: #e3eeff;
+  --info-soft-foreground: #1e40af;
+  --success-soft: #dff5e8;
+  --success-soft-foreground: #14532d;
+  --warning-soft: #fff1dc;
+  --warning-soft-foreground: #92400e;
+  --danger-soft: #fee7e7;
+  --danger-soft-foreground: #991b1b;
 
   --success: #15803d;
   --success-foreground: #ffffff;
@@ -35,10 +45,10 @@
   --field-foreground: #111114;
   --field-border: #a1a1aa;
 
-  --border: #d4d4d8;
-  --separator: #e4e4e7;
-  --focus: #0f766e;
-  --link: #0f766e;
+  --border: #e3e5e8;
+  --separator: #dfe2e6;
+  --focus: #00c98e;
+  --link: #006b4d;
 
   /* Riêng của app */
   --font-size-base: 19px;
@@ -48,9 +58,10 @@
 
 .dark,
 [data-theme="dark"] {
-  --background: #000000;
+  --background: #10131b;
+  --card-background: #1b2130;
   --foreground: #f4f4f5;
-  --surface: #1c1c1e;
+  --surface: #1b2130;
   --surface-foreground: #f4f4f5;
   --overlay: #2c2c2e;
   --overlay-foreground: #f4f4f5;
@@ -59,8 +70,17 @@
   --default: #3a3a3c;
   --default-foreground: #f4f4f5;
 
-  --accent: #2dd4bf;
-  --accent-foreground: #042f2e;
+  --accent: #35d6a4;
+  --accent-highlight: #67e2bf;
+  --accent-foreground: #063b2d;
+  --info-soft: #172e4d;
+  --info-soft-foreground: #93c5fd;
+  --success-soft: #173d2b;
+  --success-soft-foreground: #86efac;
+  --warning-soft: #493015;
+  --warning-soft-foreground: #fcd34d;
+  --danger-soft: #4a1d22;
+  --danger-soft-foreground: #fca5a5;
 
   --success: #4ade80;
   --success-foreground: #052e16;
@@ -74,9 +94,9 @@
   --field-border: #71717a;
 
   --border: #3f3f46;
-  --separator: #27272a;
-  --focus: #2dd4bf;
-  --link: #2dd4bf;
+  --separator: #30343d;
+  --focus: #35d6a4;
+  --link: #75e8c3;
 }
 
 html {
