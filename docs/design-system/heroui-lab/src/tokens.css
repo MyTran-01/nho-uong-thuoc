@@ -1,0 +1,85 @@
+/* Nhớ Thuốc · design tokens v0.1 (đề xuất, chờ G0)
+ * Nền: HeroUI v3 default theme. Chỉ ghi đè biến HeroUI đã có + vài biến riêng của app (cuối file).
+ * Người dùng chính: người lớn tuổi → chữ to, tương phản cao (chữ chính nhắm AAA), vùng chạm lớn (PRD M14).
+ * Font: SF Pro của hệ thống (trên Mac/iPhone, -apple-system chính là SF Pro).
+ */
+:root {
+  --font-sans: -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+
+  --radius: 0.75rem;
+  --field-radius: calc(var(--radius) * 1.25);
+
+  --background: #f2f2f7;
+  --foreground: #111114;
+  --surface: #ffffff;
+  --surface-foreground: #111114;
+  --overlay: #ffffff;
+  --overlay-foreground: #111114;
+  --muted: #52525b;
+
+  --default: #e4e4e7;
+  --default-foreground: #111114;
+
+  --accent: #0f766e;
+  --accent-foreground: #ffffff;
+
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --warning: #b45309;
+  --warning-foreground: #ffffff;
+  --danger: #b91c1c;
+  --danger-foreground: #ffffff;
+
+  --field-background: #ffffff;
+  --field-foreground: #111114;
+  --field-border: #a1a1aa;
+
+  --border: #d4d4d8;
+  --separator: #e4e4e7;
+  --focus: #0f766e;
+  --link: #0f766e;
+
+  /* Riêng của app */
+  --font-size-base: 19px;
+  --touch-min: 48px;
+  --button-height: 56px;
+}
+
+.dark,
+[data-theme="dark"] {
+  --background: #000000;
+  --foreground: #f4f4f5;
+  --surface: #1c1c1e;
+  --surface-foreground: #f4f4f5;
+  --overlay: #2c2c2e;
+  --overlay-foreground: #f4f4f5;
+  --muted: #d4d4d8;
+
+  --default: #3a3a3c;
+  --default-foreground: #f4f4f5;
+
+  --accent: #2dd4bf;
+  --accent-foreground: #042f2e;
+
+  --success: #4ade80;
+  --success-foreground: #052e16;
+  --warning: #fbbf24;
+  --warning-foreground: #451a03;
+  --danger: #f87171;
+  --danger-foreground: #450a0a;
+
+  --field-background: #1c1c1e;
+  --field-foreground: #f4f4f5;
+  --field-border: #71717a;
+
+  --border: #3f3f46;
+  --separator: #27272a;
+  --focus: #2dd4bf;
+  --link: #2dd4bf;
+}
+
+html {
+  font-size: var(--font-size-base);
+  font-family: var(--font-sans);
+}
